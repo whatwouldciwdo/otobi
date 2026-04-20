@@ -94,10 +94,10 @@ const UploadedImage = ({
 
 export default function AdminProducts() {
   const { user } = useShop();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<"catalog" | "wizard">("catalog");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [editForm, setEditForm] = useState({ ...EMPTY_EDIT_FORM });
   const [wizardStep, setWizardStep] = useState(0);
   const [wizardData, setWizardData] = useState<WizardData>({ ...EMPTY_WIZARD });
@@ -559,7 +559,7 @@ export default function AdminProducts() {
                   </div>
                 )}
 
-                {filteredProducts.map((product) => {
+                {filteredProducts.map((product: Product) => {
                   const isActive = selectedProduct?.id === product.id;
                   return (
                     <button key={product.id} type="button" className={`${styles.productRow} ${isActive ? styles.productRowActive : ""}`} onClick={() => activateProduct(product)}>

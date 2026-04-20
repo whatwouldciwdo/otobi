@@ -30,7 +30,7 @@ const articles = [
         tag: "EXHIBITION",
         title: "Otobi shines at the international SEMA show 2025.",
         date: "NOV 05, 2025",
-        image: "/images/products/syncro-kit.png", 
+        image: "/images/otobi-product-homepage.png",
     },
 ];
 
