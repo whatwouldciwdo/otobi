@@ -7,7 +7,8 @@ import { FiArrowRight } from "react-icons/fi";
 
 async function getPublishedBlogs() {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/blogs`, {
+        const base = process.env.NEXT_PUBLIC_BASE_URL || '';
+        const res = await fetch(`${base}/api/blogs`, {
             cache: 'no-store'
         });
         if (!res.ok) return [];
