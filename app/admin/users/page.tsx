@@ -121,6 +121,10 @@ export default function AdminUsers() {
     const formatDate = (d: string) =>
         new Date(d).toLocaleDateString("id-ID", { year: "numeric", month: "short", day: "numeric" });
 
+    // Extracted before JSX to avoid TypeScript narrowing editingUser to null in the else branch,
+    // which incorrectly collapses u to never when comparing editingUser?.id === u.id
+    const editingUserId: string | null = editingUser ? editingUser.id : null;
+
     if (loading) return <div className={styles.loading}>Memuat data pengguna...</div>;
 
     return (
@@ -290,8 +294,8 @@ export default function AdminUsers() {
                                             </td>
                                         </tr>
                                     )}
-                                    {filteredUsers.map((u) => (
-                                        <tr key={u.id} className={`${styles.row} ${editingUser?.id === u.id ? styles.rowActive : ""}`}>
+                                    {filteredUsers.map((u: UserRow) => (
+                                        <tr key={u.id} className={`${styles.row} ${editingUserId === u.id ? styles.rowActive : ""}`}>
                                             <td>
                                                 <div className={styles.userCell}>
                                                     <div className={`${styles.avatar} ${u.role === "ADMIN" ? styles.avatarAdmin : ""}`}>
