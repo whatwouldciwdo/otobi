@@ -1,4 +1,4 @@
-﻿import styles from "./HeadquartersBlock.module.css";
+import styles from "./HeadquartersBlock.module.css";
 import Image from "next/image";
 
 export default function HeadquartersBlock() {

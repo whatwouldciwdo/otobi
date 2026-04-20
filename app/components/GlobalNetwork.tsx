@@ -1,4 +1,4 @@
-﻿import styles from './GlobalNetwork.module.css';
+import styles from './GlobalNetwork.module.css';
 
 export default function GlobalNetwork() {
     return (

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import styles from './CustomerReviews.module.css';
 import { FaStar } from 'react-icons/fa';

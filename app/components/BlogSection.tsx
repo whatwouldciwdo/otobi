@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import styles from "./BlogSection.module.css";
 import { FiArrowUpRight } from "react-icons/fi";

@@ -1,4 +1,4 @@
-﻿import styles from "./StatsBentoSection.module.css";
+import styles from "./StatsBentoSection.module.css";
 import AnimateOnScroll from "./AnimateOnScroll";
 
 export default function StatsBentoSection() {

@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import styles from "./PremiumHighlightSection.module.css";
 import { LuStar, LuShieldCheck, LuCircleCheckBig } from "react-icons/lu";
 import AnimateOnScroll from "./AnimateOnScroll";

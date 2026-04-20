@@ -1,4 +1,4 @@
-﻿import styles from './HeroV2.module.css';
+import styles from './HeroV2.module.css';
 
 export default function HeroV2() {
     return (

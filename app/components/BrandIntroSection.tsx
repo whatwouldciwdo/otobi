@@ -1,4 +1,4 @@
-﻿import styles from './BrandIntroSection.module.css';
+import styles from './BrandIntroSection.module.css';
 
 const stats = [
     { value: '10+', label: 'Tahun Pengalaman' },

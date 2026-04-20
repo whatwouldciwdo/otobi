@@ -1,4 +1,4 @@
-﻿import styles from './BrandStatement.module.css';
+import styles from './BrandStatement.module.css';
 
 export default function BrandStatement() {
     return (

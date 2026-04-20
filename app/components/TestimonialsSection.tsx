@@ -1,4 +1,4 @@
-﻿import styles from "./TestimonialsSection.module.css";
+import styles from "./TestimonialsSection.module.css";
 import AnimateOnScroll from "./AnimateOnScroll";
 
 const testimonials = [

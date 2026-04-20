@@ -1,4 +1,4 @@
-﻿import prisma from "../../../lib/prisma";
+import prisma from "../../../lib/prisma";
 
 export async function checkAdmin(userId: string | null) {
   if (!userId) return false;

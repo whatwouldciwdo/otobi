@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import styles from "./ContactHero.module.css";
 
 export default function ContactHero() {

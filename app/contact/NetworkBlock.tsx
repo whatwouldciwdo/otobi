@@ -1,4 +1,4 @@
-﻿import styles from "./NetworkBlock.module.css";
+import styles from "./NetworkBlock.module.css";
 import Image from "next/image";
 import Link from "next/link";
 

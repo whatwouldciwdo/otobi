@@ -1,4 +1,4 @@
-﻿import { FiDroplet, FiShield, FiStar, FiGrid } from "react-icons/fi";
+import { FiDroplet, FiShield, FiStar, FiGrid } from "react-icons/fi";
 import styles from "./ServiceCards.module.css";
 
 const services = [

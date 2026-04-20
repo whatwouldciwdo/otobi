@@ -1,4 +1,4 @@
-﻿import styles from './FeatureBlocks.module.css';
+import styles from './FeatureBlocks.module.css';
 
 const BLOCKS = [
     {
