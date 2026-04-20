@@ -65,13 +65,13 @@ const WIZARD_STEPS = [
 
 export default function AdminPromos() {
   const { user } = useShop();
-  const [promos, setPromos] = useState<Promo[]>([]);
-  const [products, setProducts] = useState<DBProduct[]>([]);
+  const [promos, setPromos] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<"catalog" | "wizard">("catalog");
   const [wizardStep, setWizardStep] = useState(0);
   const [wizardData, setWizardData] = useState<WizardData>({ ...EMPTY_WIZARD });
-  const [editingPromo, setEditingPromo] = useState<Promo | null>(null);
+  const [editingPromo, setEditingPromo] = useState<any>(null);
   const [formData, setFormData] = useState({ ...EMPTY_FORM });
   const [isCreatingNew, setIsCreatingNew] = useState(true);
   const [saving, setSaving] = useState(false);
