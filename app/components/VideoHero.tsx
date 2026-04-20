@@ -18,14 +18,14 @@ export default function VideoHero({ onScrollPast }: VideoHeroProps) {
         });
     };
 
-    
+
     useEffect(() => {
         const el = sectionRef.current;
         if (!el || !onScrollPast) return;
 
         const observer = new IntersectionObserver(
             ([entry]) => {
-                
+
                 if (!entry.isIntersecting && entry.boundingClientRect.bottom < 0) {
                     onScrollPast();
                 }
@@ -39,7 +39,7 @@ export default function VideoHero({ onScrollPast }: VideoHeroProps) {
 
     return (
         <section ref={sectionRef} className={styles.videoHero}>
-            
+
             <video
                 className={styles.videoBg}
                 autoPlay
@@ -51,22 +51,22 @@ export default function VideoHero({ onScrollPast }: VideoHeroProps) {
                 <source src="/video/otobidetailing.mp4" type="video/mp4" />
             </video>
 
-            
+
             <div className={styles.darkOverlay} />
             <div className={styles.grainOverlay} />
 
-            
+
             <div className={styles.content}>
-                <h1 className={styles.heading}>Your Car Deserves<br/>The Best Products</h1>
+                <h1 className={styles.heading}>Your Car Deserves<br />The Best Products</h1>
                 <p className={styles.subtitle}>
-                    Rangkaian produk car care premium — dari ceramic coating hingga aksesori otomotif — untuk kendaraan yang selalu tampil sempurna.
+                    Simple treatment, BIG difference!
                 </p>
                 <button className={styles.discoverBtn} onClick={handleScroll}>
                     Explore Products
                 </button>
             </div>
 
-            
+
             <a
                 href="https://instagram.com"
                 target="_blank"
@@ -77,7 +77,7 @@ export default function VideoHero({ onScrollPast }: VideoHeroProps) {
                 <FiInstagram />
             </a>
 
-            
+
             <button
                 className={styles.scrollArrow}
                 onClick={handleScroll}

@@ -48,6 +48,7 @@ export const metadata: Metadata = {
 import { ShopProvider } from "./context/ShopContext";
 import CartDrawer from "./components/CartDrawer";
 import WishlistDrawer from "./components/WishlistDrawer";
+import CookieConsent from "./components/CookieConsent";
 
 export default function RootLayout({
   children,
@@ -61,6 +62,7 @@ export default function RootLayout({
           {children}
           <CartDrawer />
           <WishlistDrawer />
+          <CookieConsent />
         </ShopProvider>
       </body>
     </html>

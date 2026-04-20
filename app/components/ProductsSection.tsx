@@ -50,6 +50,22 @@ export default function ProductsSection() {
             </div>
 
             <div className={styles.container}>
+                <div className={styles.sectionIntro}>
+                    <span className={styles.eyebrow}>Featured Products</span>
+                    <h2 className={styles.sectionTitle}>Formulated for perfection</h2>
+                    <p className={styles.sectionDesc}>Handpicked by our professional detailing team — these are the products trusted by enthusiasts and specialists across Indonesia.</p>
+                </div>
+                <div className={styles.gridWrapper}>
+                    {/* Decorative SVG background */}
+                    <svg className={styles.gridSvg} aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <pattern id="dotGrid" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+                                <circle cx="1.5" cy="1.5" r="1.5" fill="rgba(0,0,0,0.07)" />
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#dotGrid)" />
+                    </svg>
+                    <div className={styles.gridGlow} />
                 <div className={styles.productGrid}>
                     {products.map((product) => (
                         <div key={product.id} className={styles.card}>
@@ -90,12 +106,14 @@ export default function ProductsSection() {
                     ))}
                 </div>
 
-                <div className={styles.footerRow}>
-                    <Link href="/products" className={styles.discoverBtn}>
-                        BROWSE ENTIRE COLLECTION
-                        <FiArrowRight />
-                    </Link>
-                </div>
+                    <div className={styles.footerRow}>
+                        <Link href="/products" className={styles.discoverBtn}>
+                            BROWSE ENTIRE COLLECTION
+                            <FiArrowRight />
+                        </Link>
+                    </div>
+                </div> {/* gridWrapper */}
+
             </div>
         </section>
     );

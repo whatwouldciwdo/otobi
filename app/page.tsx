@@ -11,6 +11,7 @@ import CustomerReviews from "./components/CustomerReviews";
 import JournalSection from "./components/JournalSection";
 import Footer from "./components/Footer";
 import Script from "next/script";
+import ScrollReveal from "./components/ScrollReveal";
 
 export default function Home() {
     const [videoGone, setVideoGone] = useState(false);
@@ -66,33 +67,40 @@ export default function Home() {
             />
 
             
-            <Navbar />
+            <Navbar forceScrolled={videoGone} />
 
             
             {!videoGone && (
                 <VideoHero onScrollPast={handleVideoScrollPast} />
             )}
 
-            
-            <HeroV2 />
+            <ScrollReveal y={30} duration={1}>
+                <HeroV2 />
+            </ScrollReveal>
 
-            
-            <BrandStatement />
+            <ScrollReveal y={50} delay={0.1}>
+                <BrandStatement />
+            </ScrollReveal>
 
-            
-            <FeatureBlocks />
+            <ScrollReveal y={50} delay={0.1}>
+                <FeatureBlocks />
+            </ScrollReveal>
 
-            
-            <ProductsSection />
+            <ScrollReveal y={50} delay={0.1}>
+                <ProductsSection />
+            </ScrollReveal>
 
-            
-            <CustomerReviews />
+            <ScrollReveal y={50} delay={0.1}>
+                <CustomerReviews />
+            </ScrollReveal>
 
-            
-            <JournalSection />
+            <ScrollReveal y={50} delay={0.1}>
+                <JournalSection />
+            </ScrollReveal>
 
-            
-            <Footer />
+            <ScrollReveal y={30} delay={0.1}>
+                <Footer />
+            </ScrollReveal>
         </div>
     );
 }

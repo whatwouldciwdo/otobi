@@ -15,7 +15,11 @@ const navItems = [
     { label: "Contact", href: "/contact" },
 ];
 
-export default function Navbar() {
+interface NavbarProps {
+    forceScrolled?: boolean;
+}
+
+export default function Navbar({ forceScrolled = false }: NavbarProps = {}) {
     const { cartCount, wishlist, setIsCartOpen, setIsWishlistOpen, user } = useShop();
     const wishlistCount = wishlist.length;
     const router = useRouter();
@@ -39,9 +43,11 @@ export default function Navbar() {
         currentNavItems.push({ label: "Admin", href: "/admin" });
     }
 
+    const activeScrolled = scrolled || forceScrolled;
+
     return (
         <>
-            <nav className={`${styles.navbar} ${isDarkHero && !scrolled ? styles.navbarDark : styles.navbarLight} ${scrolled ? styles.scrolled : ""}`}>
+            <nav className={`${styles.navbar} ${isDarkHero && !activeScrolled ? styles.navbarDark : styles.navbarLight} ${activeScrolled ? styles.scrolled : ""}`}>
                 <div className={styles.inner}>
                     
                     <Link href="/" className={styles.logo}>

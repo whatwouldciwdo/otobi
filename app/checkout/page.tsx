@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useShop } from "../context/ShopContext";
 import Navbar from "../components/Navbar";
-import { FiArrowLeft, FiPackage, FiMapPin, FiUser, FiPhone, FiMail, FiTruck, FiCheckCircle } from "react-icons/fi";
+import { FiArrowLeft, FiPackage, FiMapPin, FiUser, FiPhone, FiMail, FiTruck, FiCheckCircle, FiTag, FiX } from "react-icons/fi";
 import styles from "./Checkout.module.css";
 
 interface Area {
@@ -28,7 +28,6 @@ export default function CheckoutPage() {
     const router = useRouter();
     const { cart, cartTotal, user, login, clearCart } = useShop();
 
-    
     const [form, setForm] = useState({
         recipientName: user?.name ?? "",
         email: user?.email ?? "",
@@ -36,7 +35,6 @@ export default function CheckoutPage() {
         address: user?.address ?? "",
     });
 
-    
     const [areaInput, setAreaInput] = useState(user?.areaName ?? "");
     const [areaResults, setAreaResults] = useState<Area[]>([]);
     const [selectedArea, setSelectedArea] = useState<Area | null>(
@@ -44,7 +42,6 @@ export default function CheckoutPage() {
     );
     const [searchingArea, setSearchingArea] = useState(false);
 
-    
     const [rates, setRates] = useState<ShippingRate[]>([]);
     const [selectedRate, setSelectedRate] = useState<ShippingRate | null>(null);
     const [loadingRates, setLoadingRates] = useState(false);
@@ -52,20 +49,23 @@ export default function CheckoutPage() {
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState("");
 
-    
+    // Voucher state
+    const [voucherCode, setVoucherCode] = useState("");
+    const [voucherLoading, setVoucherLoading] = useState(false);
+    const [voucherError, setVoucherError] = useState("");
+    const [voucherSuccess, setVoucherSuccess] = useState("");
+    const [discountAmount, setDiscountAmount] = useState(0);
+
     useEffect(() => {
         if (cart.length === 0) router.push("/cart");
     }, [cart, router]);
 
-    
     useEffect(() => {
         if (selectedArea && rates.length === 0 && cart.length > 0) {
             fetchRates(selectedArea);
         }
-        
     }, []);
 
-    
     useEffect(() => {
         if (areaInput.length < 3) {
             setAreaResults([]);
@@ -94,10 +94,8 @@ export default function CheckoutPage() {
         setSelectedRate(null);
         try {
             const items = cart.map((item) => {
-                
                 const digits = item.price.replace(/[^\d]/g, "");
                 const value = parseInt(digits, 10) || 10000;
-                
                 const normalizedValue = value < 1000 ? value * 1000 : value;
                 return {
                     name: item.title,
@@ -139,6 +137,45 @@ export default function CheckoutPage() {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
+    const handleVoucher = async () => {
+        if (!voucherCode.trim()) return;
+        setVoucherLoading(true);
+        setVoucherError("");
+        setVoucherSuccess("");
+        try {
+            const productIds = cart.map(item => item.id);
+            const res = await fetch("/api/promos/validate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    code: voucherCode.trim().toUpperCase(),
+                    subtotal: cartTotal,
+                    productIds,
+                    categories: [],
+                }),
+            });
+            const data = await res.json();
+            if (data.valid) {
+                setDiscountAmount(data.discountAmount);
+                setVoucherSuccess(data.message);
+            } else {
+                setDiscountAmount(0);
+                setVoucherError(data.message);
+            }
+        } catch {
+            setVoucherError("Gagal memvalidasi voucher.");
+        } finally {
+            setVoucherLoading(false);
+        }
+    };
+
+    const removeVoucher = () => {
+        setVoucherCode("");
+        setDiscountAmount(0);
+        setVoucherError("");
+        setVoucherSuccess("");
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedArea) { alert("Harap pilih kelurahan/kecamatan tujuan pengiriman."); return; }
@@ -170,7 +207,6 @@ export default function CheckoutPage() {
             });
             const data = await res.json();
             if (data.orderId) {
-                
                 if (user && user.id && !user.id.startsWith('guest_')) {
                     login(
                         user.name,
@@ -198,7 +234,7 @@ export default function CheckoutPage() {
     const formatPrice = (price: number) =>
         `Rp ${price.toLocaleString("id-ID")}`;
 
-    const finalTotal = cartTotal + (selectedRate?.price ?? 0);
+    const finalTotal = cartTotal + (selectedRate?.price ?? 0) - discountAmount;
 
     if (cart.length === 0) return null;
 
@@ -215,9 +251,8 @@ export default function CheckoutPage() {
                     <h1 className={styles.pageTitle}>CHECKOUT</h1>
 
                     <div className={styles.layout}>
-                        
                         <form className={styles.formSection} onSubmit={handleSubmit}>
-                            
+                            {/* Data Penerima */}
                             <div className={styles.card}>
                                 <div className={styles.cardHeader}>
                                     <FiUser className={styles.cardIcon} />
@@ -270,7 +305,7 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            
+                            {/* Alamat Pengiriman */}
                             <div className={styles.card}>
                                 <div className={styles.cardHeader}>
                                     <FiMapPin className={styles.cardIcon} />
@@ -334,7 +369,7 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
 
-                            
+                            {/* Pilih Ekspedisi */}
                             <div className={styles.card}>
                                 <div className={styles.cardHeader}>
                                     <FiTruck className={styles.cardIcon} />
@@ -388,7 +423,7 @@ export default function CheckoutPage() {
                             </button>
                         </form>
 
-                        
+                        {/* Summary Panel */}
                         <aside className={styles.summary}>
                             <div className={styles.summaryCard}>
                                 <h2 className={styles.summaryTitle}>Ringkasan Pesanan</h2>
@@ -407,6 +442,46 @@ export default function CheckoutPage() {
 
                                 <div className={styles.summaryDivider} />
 
+                                {/* Voucher Section */}
+                                <div className={styles.voucherSection}>
+                                    <label className={styles.voucherLabel}>
+                                        <FiTag style={{ marginRight: 6 }} />
+                                        Kode Voucher
+                                    </label>
+                                    {discountAmount > 0 ? (
+                                        <div className={styles.voucherApplied}>
+                                            <span>{voucherCode.toUpperCase()}</span>
+                                            <button className={styles.removeVoucherBtn} onClick={removeVoucher}>
+                                                <FiX />
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className={styles.voucherInput}>
+                                            <input
+                                                type="text"
+                                                id="voucher-code-input"
+                                                placeholder="Masukkan kode voucher"
+                                                value={voucherCode}
+                                                onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                                                className={styles.voucherField}
+                                                onKeyDown={(e) => e.key === "Enter" && handleVoucher()}
+                                            />
+                                            <button
+                                                id="apply-voucher-btn"
+                                                className={styles.voucherBtn}
+                                                onClick={handleVoucher}
+                                                disabled={voucherLoading || !voucherCode.trim()}
+                                            >
+                                                {voucherLoading ? "..." : "Pakai"}
+                                            </button>
+                                        </div>
+                                    )}
+                                    {voucherError && <p className={styles.voucherError}>{voucherError}</p>}
+                                    {voucherSuccess && <p className={styles.voucherSuccess}>{voucherSuccess}</p>}
+                                </div>
+
+                                <div className={styles.summaryDivider} />
+
                                 <div className={styles.summaryRow}>
                                     <span>Subtotal Produk</span>
                                     <span>{formatPrice(cartTotal)}</span>
@@ -415,6 +490,12 @@ export default function CheckoutPage() {
                                     <span>Ongkos Kirim</span>
                                     <span>{selectedRate ? formatPrice(selectedRate.price) : <em className={styles.dimText}>Pilih ekspedisi</em>}</span>
                                 </div>
+                                {discountAmount > 0 && (
+                                    <div className={`${styles.summaryRow} ${styles.discountRow}`}>
+                                        <span>Diskon Voucher</span>
+                                        <span>-{formatPrice(discountAmount)}</span>
+                                    </div>
+                                )}
 
                                 <div className={styles.summaryDivider} />
 

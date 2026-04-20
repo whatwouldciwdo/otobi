@@ -5,6 +5,8 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { FiShoppingBag, FiSearch, FiFilter, FiHeart } from "react-icons/fi";
+import { BsGrid3X3, BsGrid1X2Fill } from "react-icons/bs";
+import { TbLayoutGrid, TbColumns2, TbLayoutGridAdd } from "react-icons/tb";
 import styles from "./Products.module.css";
 import { useShop } from "../context/ShopContext";
 import { useEffect, useState } from "react";
@@ -18,6 +20,14 @@ interface DBProduct {
     rating: number;
     category: string | null;
     description: string;
+}
+
+interface ActivePromo {
+    id: string;
+    discountPct: number;
+    type: string;
+    categories: string | null;
+    productIds: string | null;
 }
 
 const CATEGORIES = [
@@ -43,6 +53,9 @@ const CATEGORIES = [
     "Pengusir Tikus"
 ];
 
+type GridSize = 2 | 4 | 6;
+type MobileGridSize = 1 | 2;
+
 function ProductImage({
     src,
     alt,
@@ -62,11 +75,14 @@ export default function ProductsPage() {
     const { addToCart, toggleWishlist, wishlist } = useShop();
     const [products, setProducts] = useState<DBProduct[]>([]);
     const [loading, setLoading] = useState(true);
+    const [activePromos, setActivePromos] = useState<ActivePromo[]>([]);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("Semua Produk");
     const [sortOrder, setSortOrder] = useState("default");
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+    const [gridSize, setGridSize] = useState<GridSize>(6);
+    const [mobileGridSize, setMobileGridSize] = useState<MobileGridSize>(2);
 
     useEffect(() => {
         fetch("/api/products")
@@ -76,7 +92,37 @@ export default function ProductsPage() {
                 setLoading(false);
             })
             .catch(() => setLoading(false));
+
+        fetch("/api/promos")
+            .then((res) => res.json())
+            .then((data) => setActivePromos(data.promos ?? []))
+            .catch(() => {});
     }, []);
+
+    // Find applicable promo for a product
+    const getProductPromo = (product: DBProduct): ActivePromo | null => {
+        for (const promo of activePromos) {
+            if (promo.type === "ALL") return promo;
+            if (promo.type === "CATEGORY" && promo.categories) {
+                try {
+                    const cats: string[] = JSON.parse(promo.categories);
+                    if (product.category && cats.some(c => c.toLowerCase() === product.category!.toLowerCase())) return promo;
+                } catch {}
+            }
+            if (promo.type === "PRODUCTS" && promo.productIds) {
+                try {
+                    const ids: string[] = JSON.parse(promo.productIds);
+                    if (ids.includes(product.id)) return promo;
+                } catch {}
+            }
+        }
+        return null;
+    };
+
+    const getDiscountedPrice = (price: string, discountPct: number): number => {
+        const num = parseFloat(price);
+        return Math.floor(num * (1 - discountPct / 100));
+    };
 
     const formatPrice = (price: string) => {
         const num = parseFloat(price);
@@ -99,6 +145,8 @@ export default function ProductsPage() {
         if (sortOrder === "price-desc") return priceB - priceA;
         return 0;
     });
+
+    const gridClass = `${styles.productGrid} ${styles[`grid${gridSize}`]} ${styles[`gridMobile${mobileGridSize}`]}`;
 
     return (
         <div className="page-wrapper" style={{ backgroundColor: "#ffffff" }}>
@@ -162,17 +210,73 @@ export default function ProductsPage() {
                                         className={styles.searchInput}
                                     />
                                 </div>
-                                <div className={styles.sortBox}>
-                                    <select
-                                        id="sortOrder"
-                                        value={sortOrder}
-                                        onChange={(e) => setSortOrder(e.target.value)}
-                                        className={styles.sortSelect}
-                                    >
-                                        <option value="default">Most Relevant</option>
-                                        <option value="price-asc">Price: Low to High</option>
-                                        <option value="price-desc">Price: High to Low</option>
-                                    </select>
+
+                                <div className={styles.toolbarRight}>
+                                    {/* Desktop grid switcher */}
+                                    <div className={styles.gridSwitcher}>
+                                        <button
+                                            id="grid-6-btn"
+                                            className={`${styles.gridBtn} ${gridSize === 6 ? styles.gridBtnActive : ""}`}
+                                            onClick={() => setGridSize(6)}
+                                            aria-label="6 columns"
+                                            title="6 kolom"
+                                        >
+                                            <BsGrid3X3 />
+                                        </button>
+                                        <button
+                                            id="grid-4-btn"
+                                            className={`${styles.gridBtn} ${gridSize === 4 ? styles.gridBtnActive : ""}`}
+                                            onClick={() => setGridSize(4)}
+                                            aria-label="4 columns"
+                                            title="4 kolom"
+                                        >
+                                            <TbLayoutGrid />
+                                        </button>
+                                        <button
+                                            id="grid-2-btn"
+                                            className={`${styles.gridBtn} ${gridSize === 2 ? styles.gridBtnActive : ""}`}
+                                            onClick={() => setGridSize(2)}
+                                            aria-label="2 columns"
+                                            title="2 kolom"
+                                        >
+                                            <TbColumns2 />
+                                        </button>
+                                    </div>
+
+                                    {/* Mobile grid switcher */}
+                                    <div className={styles.mobileGridSwitcher}>
+                                        <button
+                                            id="mobile-grid-2-btn"
+                                            className={`${styles.gridBtn} ${mobileGridSize === 2 ? styles.gridBtnActive : ""}`}
+                                            onClick={() => setMobileGridSize(2)}
+                                            aria-label="2 columns mobile"
+                                            title="2 kolom"
+                                        >
+                                            <BsGrid1X2Fill />
+                                        </button>
+                                        <button
+                                            id="mobile-grid-1-btn"
+                                            className={`${styles.gridBtn} ${mobileGridSize === 1 ? styles.gridBtnActive : ""}`}
+                                            onClick={() => setMobileGridSize(1)}
+                                            aria-label="1 column mobile"
+                                            title="1 kolom"
+                                        >
+                                            <TbLayoutGridAdd />
+                                        </button>
+                                    </div>
+
+                                    <div className={styles.sortBox}>
+                                        <select
+                                            id="sortOrder"
+                                            value={sortOrder}
+                                            onChange={(e) => setSortOrder(e.target.value)}
+                                            className={styles.sortSelect}
+                                        >
+                                            <option value="default">Most Relevant</option>
+                                            <option value="price-asc">Price: Low to High</option>
+                                            <option value="price-desc">Price: High to Low</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
@@ -186,9 +290,11 @@ export default function ProductsPage() {
                                     <p>No products found in this category.</p>
                                 </div>
                             ) : (
-                                <div className={styles.productGrid}>
+                                <div className={gridClass}>
                                     {sortedProducts.map((product) => {
                                         const isWishlisted = wishlist.includes(product.id);
+                                        const promo = getProductPromo(product);
+                                        const discountedPrice = promo ? getDiscountedPrice(product.price, promo.discountPct) : null;
                                         return (
                                             <div key={product.id} className={styles.card}>
                                                 <div className={styles.imageWrapper}>
@@ -200,6 +306,11 @@ export default function ProductsPage() {
                                                         />
                                                     </Link>
                                                     
+                                                    {promo && (
+                                                        <div className={styles.discountBadge}>
+                                                            -{promo.discountPct}%
+                                                        </div>
+                                                    )}
                                                     
                                                     <button
                                                         className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlisted : ''}`}
@@ -218,7 +329,14 @@ export default function ProductsPage() {
                                                         <h4 className={styles.productTitle}>
                                                             <Link href={`/products/${product.id}`}>{product.title}</Link>
                                                         </h4>
-                                                        <p className={styles.productPrice}>{formatPrice(product.price)}</p>
+                                                        {promo && discountedPrice !== null ? (
+                                                            <div className={styles.priceWrapper}>
+                                                                <p className={styles.productPriceOld}>{formatPrice(product.price)}</p>
+                                                                <p className={styles.productPriceNew}>Rp {discountedPrice.toLocaleString("id-ID")}</p>
+                                                            </div>
+                                                        ) : (
+                                                            <p className={styles.productPrice}>{formatPrice(product.price)}</p>
+                                                        )}
                                                     </div>
                                                     <button
                                                         className={styles.cartBtn}
@@ -227,7 +345,9 @@ export default function ProductsPage() {
                                                             addToCart({
                                                                 id: product.id,
                                                                 title: product.title,
-                                                                price: formatPrice(product.price),
+                                                                price: promo && discountedPrice !== null
+                                                                    ? `Rp ${discountedPrice.toLocaleString("id-ID")}`
+                                                                    : formatPrice(product.price),
                                                                 image: product.image,
                                                                 weight: product.weight ?? 300,
                                                             });

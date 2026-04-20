@@ -393,7 +393,7 @@ export default function AdminProducts() {
 
   return (
     <div className={styles.pageContainer}>
-      {mode === "catalog" && (
+      {mode === "catalog" && !selectedProduct && (
         <>
           <section className={styles.hero}>
             <div className={styles.bgGlow}></div>
@@ -473,68 +473,17 @@ export default function AdminProducts() {
         </section>
       ) : (
         <section className={styles.workspace}>
-          <div className={styles.catalogPanel}>
-            <div className={styles.panelHeader}>
-              <div>
-                <span className={styles.panelEyebrow}>Catalog list</span>
-                <h2>Produk tersimpan</h2>
-              </div>
-              <button className={styles.secondaryBtn} onClick={startWizard}>
-                <HiOutlinePlus /> Tambah
-              </button>
-            </div>
-
-            <div className={styles.toolbar}>
-              <div className={styles.searchBox}>
-                <FiSearch />
-                <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari nama produk atau deskripsi..." />
-              </div>
-              <select className={styles.filterSelect} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-                <option value="all">Semua kategori</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.catalogList}>
-              {filteredProducts.length === 0 && (
-                <div className={styles.emptyState}>
-                  <FiImage />
-                  <strong>Belum ada product yang cocok.</strong>
-                  <p>Tambah product baru untuk mulai mengisi katalog seller center.</p>
+          {selectedProduct ? (
+            <div className={styles.editorPanelFull}>
+              <div className={styles.panelHeader}>
+                <div>
+                  <span className={styles.panelEyebrow}>Product editor</span>
+                  <h2>Edit detail produk</h2>
                 </div>
-              )}
-
-              {filteredProducts.map((product) => {
-                const isActive = selectedProduct?.id === product.id;
-                return (
-                  <button key={product.id} type="button" className={`${styles.productRow} ${isActive ? styles.productRowActive : ""}`} onClick={() => activateProduct(product)}>
-                    <div className={styles.productThumb}>
-                      {product.image ? <UploadedImage src={product.image} alt={product.title} className={styles.productThumbImg} /> : <FiImage />}
-                    </div>
-                    <div className={styles.productMeta}>
-                      <div className={styles.productMetaTop}>
-                        <strong>{product.title}</strong>
-                        <span>{formatCurrency(Number(product.price || 0))}</span>
-                      </div>
-                      <p>{product.category || "Tanpa kategori"}</p>
-                      <small>{product.weight} gr</small>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className={styles.editorPanel}>
-            <div className={styles.panelHeader}>
-              <div>
-                <span className={styles.panelEyebrow}>Product editor</span>
-                <h2>{selectedProduct ? "Edit detail produk" : "Pilih product"}</h2>
-              </div>
-              {selectedProduct && (
                 <div className={styles.editorActions}>
+                  <button className={styles.ghostBtn} onClick={() => setSelectedProduct(null)}>
+                    <HiOutlineArrowLeft /> Kembali
+                  </button>
                   <button className={styles.secondaryBtn} onClick={handleSaveEdit} disabled={saving}>
                     <FiEdit2 /> {saving ? "Menyimpan..." : "Update"}
                   </button>
@@ -542,51 +491,95 @@ export default function AdminProducts() {
                     <FiTrash2 /> Hapus
                   </button>
                 </div>
-              )}
-            </div>
-
-            {selectedProduct ? (
-              <>
-                <div className={styles.formGroup}>
-                  <label>Gambar product</label>
-                  <div className={styles.singleImageCard} onClick={() => fileInputRef.current?.click()}>
-                    {editForm.image ? <UploadedImage src={editForm.image} alt="Preview" className={styles.singleImagePreview} /> : <FiImage />}
-                  </div>
-                  <input ref={fileInputRef} type="file" accept="image/*" className={styles.hiddenInput} onChange={(e) => handleEditImagePick(e.target.files?.[0])} />
-                  {uploadError && <p className={styles.errorText}>{uploadError}</p>}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label>Nama product</label>
-                  <input value={editForm.title} onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))} />
-                </div>
-                <div className={styles.twoCol}>
-                  <div className={styles.formGroup}>
-                    <label>Harga</label>
-                    <input value={editForm.price} onChange={(e) => setEditForm((prev) => ({ ...prev, price: e.target.value }))} />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Berat</label>
-                    <input value={editForm.weight} onChange={(e) => setEditForm((prev) => ({ ...prev, weight: e.target.value }))} />
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Kategori</label>
-                  <input value={editForm.category} onChange={(e) => setEditForm((prev) => ({ ...prev, category: e.target.value }))} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Deskripsi</label>
-                  <textarea rows={8} value={editForm.description} onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))} />
-                </div>
-              </>
-            ) : (
-              <div className={styles.emptyState}>
-                <HiOutlinePhoto />
-                <strong>Pilih satu product dari daftar.</strong>
-                <p>Atau klik tombol tambah untuk masuk ke flow seller center bertahap.</p>
               </div>
-            )}
-          </div>
+
+              <div className={styles.formGroup}>
+                <label>Gambar product</label>
+                <div className={styles.singleImageCard} onClick={() => fileInputRef.current?.click()}>
+                  {editForm.image ? <UploadedImage src={editForm.image} alt="Preview" className={styles.singleImagePreview} /> : <FiImage />}
+                </div>
+                <input ref={fileInputRef} type="file" accept="image/*" className={styles.hiddenInput} onChange={(e) => handleEditImagePick(e.target.files?.[0])} />
+                {uploadError && <p className={styles.errorText}>{uploadError}</p>}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Nama product</label>
+                <input value={editForm.title} onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))} />
+              </div>
+              <div className={styles.twoCol}>
+                <div className={styles.formGroup}>
+                  <label>Harga</label>
+                  <input value={editForm.price} onChange={(e) => setEditForm((prev) => ({ ...prev, price: e.target.value }))} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Berat</label>
+                  <input value={editForm.weight} onChange={(e) => setEditForm((prev) => ({ ...prev, weight: e.target.value }))} />
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Kategori</label>
+                <input value={editForm.category} onChange={(e) => setEditForm((prev) => ({ ...prev, category: e.target.value }))} />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Deskripsi</label>
+                <textarea rows={8} value={editForm.description} onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))} />
+              </div>
+            </div>
+          ) : (
+            <div className={styles.catalogPanel}>
+              <div className={styles.panelHeader}>
+                <div>
+                  <span className={styles.panelEyebrow}>Catalog list</span>
+                  <h2>Produk tersimpan</h2>
+                </div>
+                <button className={styles.secondaryBtn} onClick={startWizard}>
+                  <HiOutlinePlus /> Tambah
+                </button>
+              </div>
+
+              <div className={styles.toolbar}>
+                <div className={styles.searchBox}>
+                  <FiSearch />
+                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari nama produk atau deskripsi..." />
+                </div>
+                <select className={styles.filterSelect} value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+                  <option value="all">Semua kategori</option>
+                  {categories.map((category) => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.catalogList}>
+                {filteredProducts.length === 0 && (
+                  <div className={styles.emptyState}>
+                    <FiImage />
+                    <strong>Belum ada product yang cocok.</strong>
+                    <p>Tambah product baru untuk mulai mengisi katalog seller center.</p>
+                  </div>
+                )}
+
+                {filteredProducts.map((product) => {
+                  const isActive = selectedProduct?.id === product.id;
+                  return (
+                    <button key={product.id} type="button" className={`${styles.productRow} ${isActive ? styles.productRowActive : ""}`} onClick={() => activateProduct(product)}>
+                      <div className={styles.productThumb}>
+                        {product.image ? <UploadedImage src={product.image} alt={product.title} className={styles.productThumbImg} /> : <FiImage />}
+                      </div>
+                      <div className={styles.productMeta}>
+                        <div className={styles.productMetaTop}>
+                          <strong>{product.title}</strong>
+                          <span>{formatCurrency(Number(product.price || 0))}</span>
+                        </div>
+                        <p>{product.category || "Tanpa kategori"}</p>
+                        <small>{product.weight} gr</small>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </section>
       )}
     </div>

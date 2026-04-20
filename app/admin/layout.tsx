@@ -22,6 +22,7 @@ import {
   FiSun,
   FiX,
   FiCommand,
+  FiUsers,
 } from "react-icons/fi";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -29,6 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -46,6 +48,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: "Reports", href: "/admin/reports", icon: <FiFileText /> },
     { label: "Products", href: "/admin/products", icon: <FiBox /> },
     { label: "Blogs", href: "/admin/blogs", icon: <FiEdit3 /> },
+    { label: "Users", href: "/admin/users", icon: <FiUsers /> },
   ];
 
   const otherNavItems = [
@@ -55,12 +58,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className={styles.adminLayout} data-theme={isDark ? "dark" : "light"}>
-      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.isOpen : ""}`}>
+      <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.isOpen : ""} ${isSidebarCollapsed ? styles.isCollapsed : ""}`}>
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
             <div className={styles.logoIcon}></div>
             <h2>OTOBI</h2>
           </div>
+          <button 
+            className={styles.collapseBtn} 
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <FiMenu />
+          </button>
           <button className={styles.closeBtn} onClick={() => setIsSidebarOpen(false)}>
             <FiX />
           </button>
@@ -119,7 +129,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {isSidebarOpen && <div className={styles.backdrop} onClick={() => setIsSidebarOpen(false)} />}
 
-      <main className={styles.mainContent}>
+      <main className={`${styles.mainContent} ${isSidebarCollapsed ? styles.isCollapsedMain : ""}`}>
         <header className={styles.header}>
           <div className={styles.headerLeft}>
             <button className={styles.menuBtn} onClick={() => setIsSidebarOpen(true)}>

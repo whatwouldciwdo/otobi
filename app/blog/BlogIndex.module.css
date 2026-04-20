@@ -3,6 +3,10 @@
     position: relative;
     padding: 140px 0 80px;
     background-color: #f4f5f7;
+    background-image: url('/images/blog-hero.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -10,6 +14,14 @@
     justify-content: center;
     text-align: center;
     min-height: 400px;
+}
+
+.heroSection::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 0;
 }
 
 .ghostText {
@@ -22,7 +34,7 @@
     font-weight: 700;
     line-height: 0.8;
     color: transparent;
-    -webkit-text-stroke: 1px rgba(0,0,0,0.04);
+    -webkit-text-stroke: 1px rgba(255,255,255,0.15);
     white-space: nowrap;
     z-index: 0;
     pointer-events: none;
@@ -40,7 +52,7 @@
     font-family: var(--font-oswald), sans-serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 700;
-    color: #111;
+    color: #fff;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin: 0 0 16px 0;
@@ -49,7 +61,7 @@
 .pageDescription {
     font-family: var(--font-geist-sans), sans-serif;
     font-size: 16px;
-    color: #555;
+    color: rgba(255, 255, 255, 0.8);
     line-height: 1.6;
     margin: 0;
 }

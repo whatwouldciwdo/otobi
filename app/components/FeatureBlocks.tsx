@@ -1,4 +1,8 @@
+"use client";
+
 import styles from './FeatureBlocks.module.css';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const BLOCKS = [
     {
@@ -6,7 +10,7 @@ const BLOCKS = [
         title: 'CERAMIC COATINGS',
         subtitle: 'ADVANCED QUARTZ TECHNOLOGY',
         description: 'Our core business and true passion. We develop the most advanced quartz coatings, offering unrivaled durability and performance.',
-        image: '/images/products/syncro-kit.png', 
+        image: '/images/OTOBI DETAILING STUDIO-2290.jpg.webp',
         bgStyle: 'white',
         ghostText: 'Q²M',
     },
@@ -15,20 +19,22 @@ const BLOCKS = [
         title: 'INNOVATIVE MAINTENANCE',
         subtitle: 'MAINTAIN WITH EASE',
         description: 'The most extensive range of car care products, carefully designed to match our coatings and preserve your vehicle\'s value.',
-        image: '/images/products/bathe-plus.png',
+        image: '/images/innovative-otobi.webp',
         bgStyle: 'gray',
         ghostText: 'Q²M',
         reverse: true,
+        objectPosition: 'center bottom',
     },
     {
         id: 'accessories',
         title: 'ULTIMATE ACCESSORIES',
         subtitle: 'TOOLS FOR PROFESSIONALS',
         description: 'High quality microfiber towels, practical accessories and professional tools designed to optimize your workflow.',
-        image: '/images/products/silk-dryer.png',
+        image: '/images/accessoris-otobi.webp',
         bgStyle: 'white',
         ghostText: 'ACCESSORIES',
     },
+    /*
     {
         id: 'ppf',
         title: 'UNCOMPROMISED PAINT PROTECTION',
@@ -39,15 +45,17 @@ const BLOCKS = [
         ghostText: 'PPF',
         reverse: true,
     },
+    */
     {
         id: 'purify',
         title: 'REMOVE AND PREVENT',
         subtitle: 'INTERIOR PURIFICATION',
         description: 'Advanced solutions for interior cleaning, sanitization and odor removal, providing a safe and healthy environment.',
-        image: '/images/products/interior-detailer.png',
+        image: '/images/otobi-allpurpose.webp',
         bgStyle: 'white',
         ghostText: 'PURIFY',
     },
+    /*
     {
         id: 'marine',
         title: 'MARINE WARRIOR',
@@ -58,6 +66,7 @@ const BLOCKS = [
         ghostText: 'Q²R',
         reverse: true,
     }
+    */
 ];
 
 export default function FeatureBlocks() {
@@ -74,7 +83,13 @@ export default function FeatureBlocks() {
                     <div className={styles.ghostText}>{block.ghostText}</div>
                     
                     <div className={styles.contentWrapper}>
-                        <div className={styles.textContent}>
+                        <motion.div 
+                            className={styles.textContent}
+                            initial={{ opacity: 0, x: block.reverse ? 50 : -50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                        >
                             <h2 className={styles.title}>{block.title}</h2>
                             <p className={styles.description}>{block.description}</p>
                             <button className={styles.discoverBtn}>
@@ -84,15 +99,31 @@ export default function FeatureBlocks() {
                                     <polyline points="12 5 19 12 12 19"></polyline>
                                 </svg>
                             </button>
-                        </div>
-                        <div className={styles.imageContent}>
+                        </motion.div>
+                        <motion.div 
+                            className={styles.imageContent}
+                            initial={{ opacity: 0, x: block.reverse ? -50 : 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        >
                             <div className={styles.imagePlaceholder}>
-                                
-                                <div className={styles.fallbackBox}>
-                                    {block.title} Image
-                                </div>
+                                {block.image ? (
+                                    <Image
+                                        src={block.image}
+                                        alt={block.title}
+                                        fill
+                                        className={styles.blockImage}
+                                        style={{ objectPosition: (block as any).objectPosition ?? 'center' }}
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                    />
+                                ) : (
+                                    <div className={styles.fallbackBox}>
+                                        {block.title} Image
+                                    </div>
+                                )}
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             ))}

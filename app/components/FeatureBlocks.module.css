@@ -148,8 +148,13 @@
     aspect-ratio: 16/9;
     border-radius: 4px;
     overflow: hidden;
-    
+    position: relative;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.blockImage {
+    object-fit: cover;
+    object-position: center;
 }
 
 .fallbackBox {

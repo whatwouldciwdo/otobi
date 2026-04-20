@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { checkAdmin } from "../db";
 import prisma from "../../../../lib/prisma";
+
 export async function GET(req: Request) {
   try {
     const promos = await prisma.promo.findMany({
@@ -12,10 +13,14 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { userId, title, description, image, discountPct, isActive } = body;
+    const {
+      userId, title, description, image, discountPct, isActive,
+      code, type, categories, productIds, minOrder,
+    } = body;
     if (!(await checkAdmin(userId))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
@@ -28,6 +33,11 @@ export async function POST(req: Request) {
         image: image ?? null,
         discountPct: parseInt(discountPct ?? "0"),
         isActive: isActive !== false,
+        code: code?.trim() || null,
+        type: type ?? "ALL",
+        categories: categories ? JSON.stringify(categories) : null,
+        productIds: productIds ? JSON.stringify(productIds) : null,
+        minOrder: parseInt(minOrder ?? "0"),
       },
     });
     return NextResponse.json({ success: true, id });
@@ -35,11 +45,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 export async function PUT(req: Request) {
   try {
     const body = await req.json();
-    const { userId, id, title, description, image, discountPct, isActive } =
-      body;
+    const {
+      userId, id, title, description, image, discountPct, isActive,
+      code, type, categories, productIds, minOrder,
+    } = body;
     if (!(await checkAdmin(userId))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
@@ -51,6 +64,11 @@ export async function PUT(req: Request) {
         image: image ?? null,
         discountPct: parseInt(discountPct ?? "0"),
         isActive: isActive !== false,
+        code: code?.trim() || null,
+        type: type ?? "ALL",
+        categories: categories ? JSON.stringify(categories) : null,
+        productIds: productIds ? JSON.stringify(productIds) : null,
+        minOrder: parseInt(minOrder ?? "0"),
       },
     });
     return NextResponse.json({ success: true });
@@ -58,6 +76,7 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");

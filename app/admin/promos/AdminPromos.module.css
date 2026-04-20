@@ -23,21 +23,21 @@
   overflow: hidden;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   gap: 18px;
-  padding: 32px 36px;
+  padding: 24px 32px;
   color: #fff;
   background: #101312;
   border: none;
-  box-shadow: 0 24px 60px rgba(16, 19, 18, 0.15);
+  box-shadow: 0 16px 40px rgba(16, 19, 18, 0.15);
 }
 
 .bgGlow {
   position: absolute;
-  bottom: -40%;
-  right: -5%;
-  width: 450px;
-  height: 450px;
+  top: -50%;
+  right: 0%;
+  width: 300px;
+  height: 300px;
   background: radial-gradient(circle, rgba(135, 109, 255, 0.2) 0%, transparent 60%);
   pointer-events: none;
 }
@@ -65,17 +65,18 @@
 }
 
 .hero h1 {
-  max-width: 16ch;
-  margin: 14px 0 0;
-  font-size: clamp(1.8rem, 3vw, 2.9rem);
-  line-height: 1.08;
+  max-width: 20ch;
+  margin: 10px 0 0;
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+  line-height: 1.15;
 }
 
 .hero p {
   max-width: 62ch;
-  margin: 14px 0 0;
+  margin: 8px 0 0;
   color: #a0a5ad;
-  line-height: 1.7;
+  line-height: 1.6;
+  font-size: 0.88rem;
 }
 
 .addBtn,
@@ -184,20 +185,20 @@
 }
 
 .workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 0.85fr);
-  gap: 20px;
-  align-items: start;
+  display: block;
+  margin-top: 20px;
 }
 
 .campaignPanel,
-.editorPanel {
+.editorPanel,
+.campaignPanelFull,
+.editorPanelFull {
   padding: 24px;
 }
 
-.editorPanel {
-  position: sticky;
-  top: 96px;
+.editorPanelFull {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .panelHeader,
@@ -523,7 +524,7 @@
 
 .stepper {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 24px;
 }
@@ -613,6 +614,202 @@
 
 .required {
   color: #be123c;
+}
+
+.optional {
+  color: #a0a5ad;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.78rem;
+}
+
+.stepSubtitle {
+  color: #5c626e;
+  font-size: 0.9rem;
+  margin: -14px 0 20px;
+}
+
+/* Target type selector */
+.targetTypeGrid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.targetTypeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(0,0,0,0.1);
+  background: #fff;
+  color: #5c626e;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.targetTypeBtn:hover {
+  border-color: #876DFF;
+  color: #876DFF;
+  background: rgba(135, 109, 255, 0.04);
+}
+
+.targetTypeBtnActive {
+  border-color: #876DFF;
+  background: rgba(135, 109, 255, 0.1);
+  color: #876DFF;
+}
+
+/* Category checklist */
+.categoryCheckList {
+  margin-top: 16px;
+}
+
+.checkListLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5c626e;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+
+.checkGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.checkItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  background: #fff;
+  color: #5c626e;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.checkItem input { display: none; }
+
+.checkItem:hover {
+  border-color: #876DFF;
+  color: #876DFF;
+}
+
+.checkItemActive {
+  border-color: #876DFF;
+  background: rgba(135, 109, 255, 0.08);
+  color: #876DFF;
+}
+
+/* Product checklist */
+.productCheckList {
+  margin-top: 8px;
+}
+
+.productSearch {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #f4f4f4;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06) inset;
+  color: #101312;
+  font: inherit;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.productCheckGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.productCheckItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(0,0,0,0.06);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.productCheckItem input { display: none; }
+
+.productCheckItem:hover {
+  border-color: #876DFF;
+  background: rgba(135, 109, 255, 0.04);
+}
+
+.productCheckItemActive {
+  border-color: #876DFF;
+  background: rgba(135, 109, 255, 0.06);
+}
+
+.productCheckName {
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #101312;
+}
+
+.productCheckCat {
+  font-size: 0.75rem;
+  color: #a0a5ad;
+  background: rgba(0,0,0,0.04);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Voucher badge in success panel */
+.voucherBadge {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: rgba(205, 163, 79, 0.1);
+  border: 1.5px solid rgba(205, 163, 79, 0.3);
+  color: #856a1a;
+  font-size: 0.9rem;
+}
+
+.voucherBadge strong {
+  font-family: monospace;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+}
+
+/* Voucher code in campaign list */
+.voucherCodeBadge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(205, 163, 79, 0.1);
+  color: #856a1a;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: monospace;
+  letter-spacing: 0.5px;
 }
 
 .stepPanel input,

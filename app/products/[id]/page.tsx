@@ -19,6 +19,14 @@ interface DBProduct {
     weight: number;
 }
 
+interface ActivePromo {
+    id: string;
+    discountPct: number;
+    type: string;
+    categories: string | null;
+    productIds: string | null;
+}
+
 function ProductDetailImage({
     src,
     alt,
@@ -56,7 +64,40 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         notFound();
     }
 
+    let activePromos: ActivePromo[] = [];
+    try {
+        const promosRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/promos`, { cache: "no-store" });
+        if (promosRes.ok) {
+            const data = await promosRes.json();
+            activePromos = data.promos ?? [];
+        }
+    } catch {}
+
+    let applicablePromo = null;
+    for (const promo of activePromos) {
+        if (promo.type === "ALL") { applicablePromo = promo; break; }
+        if (promo.type === "CATEGORY" && promo.categories) {
+            try {
+                const cats = JSON.parse(promo.categories) as string[];
+                if (product.category && cats.some(c => c.toLowerCase() === product.category!.toLowerCase())) { applicablePromo = promo; break; }
+            } catch {}
+        }
+        if (promo.type === "PRODUCTS" && promo.productIds) {
+            try {
+                const ids = JSON.parse(promo.productIds) as string[];
+                if (ids.includes(product.id)) { applicablePromo = promo; break; }
+            } catch {}
+        }
+    }
+
+    let discountedPrice = null;
+    if (applicablePromo) {
+        const num = parseFloat(product.price);
+        discountedPrice = Math.floor(num * (1 - applicablePromo.discountPct / 100));
+    }
+
     const formattedPrice = `RP ${parseFloat(product.price).toLocaleString("id-ID")}`;
+    const formattedDiscounted = discountedPrice !== null ? `RP ${discountedPrice.toLocaleString("id-ID")}` : null;
 
     return (
         <div className="page-wrapper">
@@ -94,7 +135,18 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                                 <span className={styles.reviewCount}>(128 Reviews)</span>
                             </div>
 
-                            <p className={styles.price}>{formattedPrice}</p>
+                            {discountedPrice !== null ? (
+                                <div style={{ display: "flex", gap: "12px", alignItems: "center", marginBottom: "24px" }}>
+                                    <p className={styles.price} style={{ color: "#a0a5ad", textDecoration: "line-through", fontSize: "1.2rem", margin: 0 }}>
+                                        {formattedPrice}
+                                    </p>
+                                    <p className={styles.price} style={{ color: "#111", margin: 0 }}>
+                                        {formattedDiscounted}
+                                    </p>
+                                </div>
+                            ) : (
+                                <p className={styles.price}>{formattedPrice}</p>
+                            )}
 
                             <div className={styles.descriptionBlock}>
                                 <h3>Description</h3>
@@ -104,7 +156,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                             <ProductActions product={{
                                 id: product.id,
                                 title: product.title,
-                                price: formattedPrice,
+                                price: formattedDiscounted ?? formattedPrice,
                                 image: product.image,
                                 rating: product.rating,
                                 description: product.description,

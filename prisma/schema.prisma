@@ -115,6 +115,11 @@ model Promo {
   isActive    Boolean  @default(true)
   startDate   DateTime?
   endDate     DateTime?
+  code        String?  @unique      // kode voucher, misal "OTOBI20"
+  type        String   @default("ALL") // "ALL" | "CATEGORY" | "PRODUCTS"
+  categories  String?  @db.Text    // JSON array of category strings
+  productIds  String?  @db.Text    // JSON array of product IDs
+  minOrder    Int      @default(0) // minimum subtotal untuk voucher berlaku
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

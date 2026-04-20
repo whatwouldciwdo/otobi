@@ -23,21 +23,21 @@
   overflow: hidden;
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
   gap: 18px;
-  padding: 32px 36px;
+  padding: 24px 32px;
   color: #fff;
   background: #101312;
   border: none;
-  box-shadow: 0 24px 60px rgba(16, 19, 18, 0.15);
+  box-shadow: 0 16px 40px rgba(16, 19, 18, 0.15);
 }
 
 .bgGlow {
   position: absolute;
-  bottom: -50%;
-  right: -10%;
-  width: 400px;
-  height: 400px;
+  top: -50%;
+  right: 0%;
+  width: 300px;
+  height: 300px;
   background: radial-gradient(circle, rgba(186, 249, 26, 0.15) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
@@ -65,17 +65,18 @@
 }
 
 .hero h1 {
-  max-width: 15ch;
-  margin: 14px 0 0;
-  font-size: clamp(1.8rem, 3vw, 2.9rem);
-  line-height: 1.08;
+  max-width: 24ch;
+  margin: 10px 0 0;
+  font-size: clamp(1.4rem, 2vw, 1.8rem);
+  line-height: 1.15;
 }
 
 .hero p {
   max-width: 60ch;
-  margin: 14px 0 0;
+  margin: 8px 0 0;
   color: #a0a5ad;
-  line-height: 1.7;
+  line-height: 1.6;
+  font-size: 0.88rem;
 }
 
 .addBtn,
@@ -126,6 +127,39 @@
 .secondaryBtn:disabled {
   opacity: .55;
   cursor: not-allowed;
+}
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  color: #5c626e;
+  transition: all 0.2s ease;
+  letter-spacing: -0.01em;
+}
+
+.ghostBtn svg {
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.ghostBtn:hover {
+  background: #f4f4f6;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #101312;
+  transform: translateX(-2px);
+}
+
+.ghostBtn:hover svg {
+  transform: translateX(-2px);
 }
 
 .summaryGrid {
@@ -270,23 +304,25 @@
 .formGroup input,
 .formGroup textarea {
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 5px;
-  background: #F4F4F4;
-  border: none;
-  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.10) inset, 0 4px 4px 0 rgba(0, 0, 0, 0.10);
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
   color: #101312;
   font: inherit;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .stepPanel input:focus,
 .stepPanel textarea:focus,
 .formGroup input:focus,
 .formGroup textarea:focus {
-  background: #ffffff;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05) inset, 0 0 0 2px #baf91a;
+  background: rgba(255, 255, 255, 0.8);
+  border-color: #baf91a;
+  box-shadow: 0 8px 24px rgba(186, 249, 26, 0.15), 0 0 0 2px rgba(186, 249, 26, 0.2);
 }
 
 .dimensions,
@@ -501,20 +537,18 @@
 }
 
 .workspace {
-  display: grid;
-  grid-template-columns: minmax(0, .95fr) minmax(340px, .85fr);
-  gap: 20px;
-  align-items: start;
+  display: block;
 }
 
 .catalogPanel,
-.editorPanel {
+.editorPanel,
+.editorPanelFull {
   padding: 24px;
 }
 
-.editorPanel {
-  position: sticky;
-  top: 96px;
+.editorPanelFull {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .panelEyebrow {

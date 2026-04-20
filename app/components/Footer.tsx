@@ -5,20 +5,20 @@ export default function Footer() {
     return (
         <footer className={styles.footer}>
             <div className={styles.container}>
-                
+
                 <div className={styles.massiveBrand}>
-                    <span className={styles.massiveBrandOutline}>PREMIUM AUTO</span><br />
-                    DETAILING
+                    <span className={styles.massiveBrandOutline}>PREMIUM CAR</span><br />
+                    CARE
                 </div>
 
                 <div className={styles.grid}>
-                    
+
                     <div className={styles.newsletterCol}>
                         <h2 className={styles.brandName}>OTOBI NEWS</h2>
                         <form className={styles.newsletterForm}>
-                            <input 
-                                type="email" 
-                                placeholder="ENTER YOUR EMAIL" 
+                            <input
+                                type="email"
+                                placeholder="ENTER YOUR EMAIL"
                                 className={styles.newsletterInput}
                                 aria-label="Email for newsletter"
                             />
@@ -28,7 +28,7 @@ export default function Footer() {
                         </form>
                     </div>
 
-                    
+
                     <div className={styles.linksCol}>
                         <h3 className={styles.colTitle}>COMPANY</h3>
                         <ul className={styles.linkList}>

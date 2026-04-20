@@ -5,6 +5,7 @@
   background: #f7f9fc;
   font-family: var(--font-outfit), var(--font-inter), sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
+  zoom: 0.85;
 }
 
 .adminLayout[data-theme='dark'] {
@@ -97,7 +98,12 @@
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 40;
-  transition: transform 0.28s ease;
+  transition: transform 0.28s ease, width 0.28s ease, padding 0.28s ease;
+}
+
+.sidebar.isCollapsed {
+  width: 90px;
+  padding: 24px 12px;
 }
 
 .sidebarHeader {
@@ -139,15 +145,29 @@
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.isCollapsed .logo h2 {
+  display: none;
 }
 
 .closeBtn,
-.menuBtn {
+.menuBtn,
+.collapseBtn {
   border: none;
   background: transparent;
   color: #101312;
   font-size: 1.35rem;
   cursor: pointer;
+}
+
+.collapseBtn {
+  display: flex;
+}
+
+.isCollapsed .collapseBtn {
+  margin: 0 auto;
 }
 
 .closeBtn {
@@ -165,6 +185,11 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.isCollapsed .sectionTitle {
+  display: none;
 }
 
 .nav {
@@ -182,6 +207,12 @@
   text-decoration: none;
   color: #5c626e;
   transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.isCollapsed .navLink {
+  justify-content: center;
+  padding: 12px;
 }
 
 .navLink:hover {
@@ -216,6 +247,10 @@
   font-weight: 500;
 }
 
+.isCollapsed .navText {
+  display: none;
+}
+
 .sidebarFooter {
   margin-top: auto;
   padding-top: 24px;
@@ -235,6 +270,12 @@
   font-weight: 500;
   font-size: 0.95rem;
   transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.isCollapsed .logoutBtn {
+  justify-content: center;
+  padding: 12px;
 }
 
 .logoutBtn:hover {
@@ -248,6 +289,11 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+  transition: margin-left 0.28s ease;
+}
+
+.mainContent.isCollapsedMain {
+  margin-left: 90px;
 }
 
 .header {
@@ -442,6 +488,10 @@
   .closeBtn,
   .menuBtn {
     display: inline-flex;
+  }
+
+  .collapseBtn {
+    display: none;
   }
 
   .backdrop {
