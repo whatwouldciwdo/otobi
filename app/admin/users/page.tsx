@@ -110,8 +110,8 @@ export default function AdminUsers() {
         }
     };
 
-    const filteredUsers = users.filter((u: UserRow) => {
-        const matchRole = filterRole === "ALL" || u.role === filterRole;
+    const filteredUsers: UserRow[] = (users as UserRow[]).filter((u: UserRow) => {
+        const matchRole = filterRole === "ALL" || (u.role as string) === (filterRole as string);
         const matchSearch =
             (u.name ?? "").toLowerCase().includes(search.toLowerCase()) ||
             u.email.toLowerCase().includes(search.toLowerCase());
