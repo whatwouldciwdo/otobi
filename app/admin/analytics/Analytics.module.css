@@ -1,0 +1,388 @@
+﻿.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.loading, .error {
+  padding: 32px;
+  border-radius: 24px;
+  background: #fff;
+  color: #a0a5ad;
+  text-align: center;
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.pageHeader h1 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: -0.02em;
+  color: #101312;
+}
+
+.pageLabel {
+  display: none;
+}
+
+.dateWrapper {
+  position: relative;
+}
+
+.dateBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #101312;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.dateBtn:hover { background: #f7f9fc; }
+
+.flip { transform: rotate(180deg); transition: transform 0.2s ease; }
+
+.dateDrop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dateOpt {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #5c626e;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dateOpt:hover { background: #f7f9fc; color: #101312; }
+
+.dateOptActive {
+  background: #101312;
+  color: #baf91a;
+  font-weight: 500;
+}
+.dateOptActive:hover { background: #1a1d1c; color: #baf91a; }
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.kpiCard {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.kpiIconWrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.kpiIconWrapper[data-color="var(--neon-green)"] {
+  background: rgba(186, 249, 26, 0.2);
+  color: #557A00;
+}
+
+.kpiIconWrapper[data-color="var(--purple-accent)"] {
+  background: rgba(135, 109, 255, 0.12);
+  color: #876DFF;
+}
+
+.kpiIconWrapper[data-color="var(--light-vi)"] {
+  background: rgba(226, 255, 153, 0.4);
+  color: #3A6600;
+}
+
+.kpiLabel {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  color: #a0a5ad;
+  font-weight: 500;
+}
+
+.kpiValue {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #101312;
+  letter-spacing: -0.02em;
+}
+
+.chartsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.chartCard {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  padding: 24px;
+}
+
+.chartCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.chartCard h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #101312;
+}
+
+.chartPeriod {
+  font-size: 0.78rem;
+  color: #a0a5ad;
+  background: rgba(0,0,0,0.04);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 160px;
+  padding-bottom: 28px;
+  position: relative;
+}
+
+.barGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.barWrap {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bar {
+  width: 100%;
+  background: #baf91a;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.4s ease;
+  min-height: 4px;
+}
+
+.barPurple { background: #876DFF; }
+
+.barLabel {
+  font-size: 0.65rem;
+  color: #a0a5ad;
+  margin-top: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.tableCard {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  padding: 24px;
+}
+
+.tableCard h2 {
+  margin: 0 0 20px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #101312;
+}
+
+.empty {
+  color: #a0a5ad;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 20px;
+}
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.categoryRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.catRank {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #a0a5ad;
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.catInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.catName {
+  font-size: 0.88rem;
+  color: #101312;
+  font-weight: 500;
+}
+
+.catBar {
+  height: 6px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.catFill {
+  height: 100%;
+  background: #876DFF;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.catCount {
+  font-size: 0.8rem;
+  color: #5c626e;
+  white-space: nowrap;
+}
+
+.statusList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.statusInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.statusName {
+  font-size: 0.85rem;
+  color: #101312;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.statusBar {
+  height: 6px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.statusFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.statusCount {
+  font-size: 0.8rem;
+  color: #5c626e;
+  white-space: nowrap;
+}
+
+.statusCount small {
+  color: #a0a5ad;
+}
+
+@media (max-width: 1100px) {
+  .kpiGrid { grid-template-columns: repeat(2, 1fr); }
+  .chartsRow, .bottomRow { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .kpiGrid { grid-template-columns: 1fr; }
+  .pageHeader { flex-direction: column; }
+}

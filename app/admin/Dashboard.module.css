@@ -1,0 +1,624 @@
+﻿.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: #101312;
+}
+
+.topSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.topSection h1 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.ghostBtn,
+.ghostBtnIcon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #101312;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.ghostBtnIcon {
+  padding: 10px;
+}
+
+.ghostBtn:hover,
+.ghostBtnIcon:hover {
+  background: #f7f9fc;
+}
+
+.chevronUp {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.datePickerWrapper {
+  position: relative;
+}
+
+.dateDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dateOption {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #5c626e;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dateOption:hover {
+  background: #f7f9fc;
+  color: #101312;
+}
+
+.dateOptionActive {
+  background: #101312;
+  color: #baf91a;
+  font-weight: 500;
+}
+
+.dateOptionActive:hover {
+  background: #1a1d1c;
+  color: #baf91a;
+}
+
+.topFilterWrapper {
+  display: flex;
+  gap: 6px;
+}
+
+.filterPill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #5c626e;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filterPill:hover {
+  background: #f7f9fc;
+}
+
+.filterPillActive {
+  background: #101312;
+  color: #baf91a;
+  border-color: transparent;
+}
+
+.filterPillActive:hover {
+  background: #1a1d1c;
+}
+
+.smartDistributionCard {
+  position: relative;
+  border-radius: 24px;
+  background: #101312;
+  color: #ffffff;
+  padding: 32px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(16, 19, 18, 0.15);
+}
+
+.bgGlow {
+  position: absolute;
+  top: -50%;
+  left: 0;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(186, 249, 26, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.bgGlow2 {
+  position: absolute;
+  bottom: -50%;
+  right: 0;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(135, 109, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.cardHeader {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 32px;
+}
+
+.cardHeader h2 {
+  font-size: 1.35rem;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+}
+
+.cardHeader p {
+  color: #a0a5ad;
+  font-size: 0.9rem;
+  margin: 0;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.metricsGrid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.metricItem {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  box-shadow: inset 0 2px 15px rgba(255, 255, 255, 0.02), 0 8px 16px rgba(0, 0, 0, 0.3);
+  padding: 24px;
+  color: #ffffff;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.metricItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+.metricLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a0a5ad;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 6px 12px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.metricIcon {
+  color: #baf91a;
+  font-size: 1rem;
+}
+
+.metricValue {
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.metricValue span {
+  font-size: 1rem;
+  color: #a0a5ad;
+  margin-left: 4px;
+}
+
+.analysisRow {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+}
+
+.salesAnalysisCard,
+.dealAnalysisCard {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.dealAnalysisCard {
+  background: #e2ff99;
+  border: none;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.dateBadge {
+  background: rgba(16, 19, 18, 0.05);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dealAnalysisCard .dateBadge {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.chartContainer {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex: 1;
+}
+
+.donutPlaceholder {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #876dff 0deg 240deg,
+    #e2ff99 240deg 310deg,
+    #baf91a 310deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.donutHole {
+  width: 140px;
+  height: 140px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.donutValue {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #101312;
+}
+
+.donutLabel {
+  font-size: 0.75rem;
+  color: #a0a5ad;
+  margin-top: 4px;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #5c626e;
+}
+
+.legendItem strong {
+  color: #101312;
+  font-weight: 600;
+}
+
+.legendDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.cardFooter {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 0.8rem;
+  color: #a0a5ad;
+}
+
+.dealBlocks {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.dealBlockWon {
+  background: #baf91a;
+  border-radius: 16px;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dealBlockHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dealBlockHeader span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #101312;
+}
+
+.dealBlockHeader strong {
+  font-size: 1.2rem;
+  background: #ffffff;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.dealChartBars {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  height: 60px;
+  margin-top: 20px;
+}
+
+.dealBar {
+  flex: 1;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0.5) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  border-radius: 4px;
+  transition: height 0.4s ease;
+  min-height: 8px;
+}
+
+.dealsRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dealBlockImproved,
+.dealBlockLost {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dealBlockImproved {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dealBlockImproved span {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.dealBlockImproved strong {
+  font-size: 1.1rem;
+}
+
+.dealBlockLost {
+  flex: 1;
+}
+
+.lostDarkSquare {
+  background: #101312;
+  border-radius: 12px;
+  height: 48px;
+  margin-top: auto;
+  opacity: 0.9;
+}
+
+.opportunitiesSection {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.oppHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.oppTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHead {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr 1fr 1fr;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.tableHead span {
+  font-size: 0.8rem;
+  color: #a0a5ad;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr 1fr 1fr;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  font-size: 0.9rem;
+  color: #101312;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.avatarName {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rowAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-color: #f7f9fc;
+}
+
+.progressCell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressBar {
+  height: 6px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+  max-width: 100px;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.progressCell span {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.increaseValue {
+  color: #101312;
+  font-weight: 500;
+}
+
+.totalValue {
+  color: #101312;
+  font-weight: 600;
+}
+
+.emptyRow {
+  padding: 32px;
+  color: #a0a5ad;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.loading,
+.error {
+  padding: 32px;
+  border-radius: 24px;
+  background: #ffffff;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #e11d48;
+}
+
+@media (max-width: 1200px) {
+  .analysisRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tableHead {
+    display: none;
+  }
+  
+  .tableRow {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

@@ -1,0 +1,206 @@
+﻿.formSection {
+    background-color: #f8f9fa;
+    padding: 80px 20px;
+    color: #101312;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.formHeader {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.title {
+    font-family: var(--font-oswald), sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    color: #101312;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    color: #64748b;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.contactForm {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.leftCol, .rightCol {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.messageGroup {
+    flex: 1;
+}
+
+.inputGroup label {
+    font-family: var(--font-oswald), sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    letter-spacing: 0.5px;
+}
+
+.inputGroup input,
+.inputGroup select,
+.inputGroup textarea {
+    width: 100%;
+    padding: 14px 16px;
+    background: #F4F4F4;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.10) inset, 0 4px 4px 0 rgba(0, 0, 0, 0.10);
+    color: #101312;
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.inputGroup textarea {
+    resize: vertical;
+    flex: 1;
+}
+
+.inputGroup input:focus,
+.inputGroup select:focus,
+.inputGroup textarea:focus {
+    background: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05) inset, 0 0 0 2px #cda34f;
+}
+
+.inputGroup select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.selectWrapper {
+    position: relative;
+}
+
+.selectWrapper::after {
+    content: "▼";
+    font-size: 10px;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #475569;
+}
+
+.captchaGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.captchaGroup label {
+    font-family: var(--font-oswald), sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    letter-spacing: 0.5px;
+}
+
+.fakeCaptcha {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #F4F4F4;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.10) inset, 0 4px 4px 0 rgba(0, 0, 0, 0.10);
+    max-width: 250px;
+    transition: all 0.2s ease;
+}
+
+.fakeCaptcha:hover {
+    background: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05) inset, 0 0 0 2px #cda34f;
+}
+
+.fakeCaptcha label {
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 13px;
+    text-transform: none;
+    letter-spacing: normal;
+    color: #101312;
+    cursor: pointer;
+}
+
+.formFooter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.disclaimer {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-align: center;
+    max-width: 800px;
+    line-height: 1.6;
+}
+
+.sumbitBtn {
+    
+}
+
+.submitBtn {
+    background-color: #101312;
+    color: #ffffff;
+    border: none;
+    padding: 14px 40px;
+    font-family: var(--font-oswald), sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submitBtn:hover {
+    background-color: #cda34f;
+}
+
+@media (max-width: 768px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+}

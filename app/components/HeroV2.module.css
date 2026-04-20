@@ -1,0 +1,104 @@
+﻿.heroSection {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background-color: #0b111e; 
+    overflow: hidden;
+    padding-top: 80px; 
+}
+
+.hexBackground {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.4;
+    background-color: #0a0e17;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='60' height='103.923' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l25.98 15v30L30 60 4.02 45V15z' fill-opacity='0' stroke='rgba(255,255,255,0.15)' stroke-width='1.5'/%3E%3Cpath d='M30 103.923l25.98-15v-30l-25.98-15-25.98 15v30z' fill-opacity='0' stroke='rgba(255,255,255,0.15)' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-size: 80px 138.56px;
+    background-position: center;
+    transform: perspective(1000px) rotateX(20deg) scale(1.2);
+    transform-origin: top center;
+    animation: hexPan 20s linear infinite alternate;
+}
+
+@keyframes hexPan {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
+}
+
+.videoOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(circle at center, transparent 0%, rgba(10, 14, 23, 0.8) 100%);
+}
+
+.content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.textContent {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.title {
+    font-family: var(--font-oswald), sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.titleOutline {
+    color: transparent;
+    -webkit-text-stroke: 2px #ffffff;
+    padding-right: 15px;
+}
+
+.discoverBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 12px 24px;
+    font-family: var(--font-oswald), sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.discoverBtn:hover {
+    background: #ffffff;
+    color: #0a0e17;
+}
+
+.discoverBtn svg {
+    transition: transform 0.3s ease;
+}
+
+.discoverBtn:hover svg {
+    transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    .content { padding: 0 20px; }
+    .titleOutline { -webkit-text-stroke: 1px #ffffff; }
+}

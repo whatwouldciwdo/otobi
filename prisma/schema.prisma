@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  password      String?        // optional because maybe OAuth later
+  phone         String?
+  address       String?
+  areaId        String?
+  areaName      String?
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  title         String
+  description   String         @db.Text
+  price         Decimal        @db.Decimal(10, 2)
+  weight        Int            @default(300)
+  image         String
+  category      String?
+  rating        Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  quantity  Int      @default(1)
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productId]) // A user can only have one cart record per product
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId]) // A user can only wishlist a product once
+}
+
+model Order {
+  id                  String   @id
+  // Biteship order info
+  biteshipOrderId     String?  @unique
+  biteshipWaybillId   String?  // AWB / nomor resi
+  biteshipStatus      String?  @default("confirmed")
+  courierCompany      String
+  courierServiceName  String
+  shippingCost        Int
+  // Recipient info
+  recipientName       String
+  recipientPhone      String
+  recipientEmail      String
+  recipientAddress    String
+  recipientAreaId     String
+  recipientAreaName   String
+  recipientPostalCode String?
+  // Order items (JSON string)
+  itemsJson           String   @db.Text
+  subtotal            Int
+  total               Int
+  // User reference (optional — guest orders allowed)
+  userId              String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Promo {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  image       String?
+  discountPct Int      @default(0)
+  isActive    Boolean  @default(true)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?  @db.Text
+  content     String   @db.Text
+  image       String?
+  author      String?
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

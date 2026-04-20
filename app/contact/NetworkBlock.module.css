@@ -1,0 +1,140 @@
+﻿.section {
+    position: relative;
+    padding: 120px 0;
+    background-color: #ffffff;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.ghostText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-oswald), sans-serif;
+    font-size: clamp(6rem, 15vw, 15rem);
+    font-weight: 700;
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.solid {
+    color: #101312;
+    -webkit-text-stroke: 0;
+}
+
+.contentWrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.textContent {
+    flex: 1;
+    max-width: 500px;
+}
+
+.title {
+    font-family: var(--font-oswald), sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    color: #101312;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0 0 20px 0;
+}
+
+.description {
+    font-size: 1.05rem;
+    color: #475569;
+    line-height: 1.6;
+    margin: 0 0 30px 0;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.actionLink {
+    font-family: var(--font-oswald), sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #101312;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border-bottom: 2px solid #101312;
+    padding-bottom: 2px;
+    width: fit-content;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.actionLink:hover {
+    color: #cda34f;
+    border-color: #cda34f;
+}
+
+.imageContent {
+    flex: 1.2;
+    border: 10px solid #ffffff;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+    background: #ffffff;
+}
+
+.imagePlaceholder {
+    width: 100%;
+    aspect-ratio: 16/10;
+    background-color: #101312;
+    position: relative;
+    overflow: hidden;
+}
+
+.mockupImage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+}
+
+.placeholderIcon {
+    width: 100px;
+    height: 100px;
+    color: rgba(255,255,255,0.1);
+}
+
+@media (max-width: 1024px) {
+    .contentWrapper {
+        flex-direction: column;
+    }
+    .textContent {
+        max-width: 100%;
+        text-align: center;
+    }
+    .links {
+        align-items: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .ghostText { font-size: clamp(4rem, 15vw, 6rem); }
+}
