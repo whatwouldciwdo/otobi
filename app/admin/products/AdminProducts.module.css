@@ -109,7 +109,7 @@
 .backLink {
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: #ffffff;
-  color: #ffffff;
+  color: #101312;
 }
 
 .secondaryBtn:hover:not(:disabled),
@@ -266,7 +266,7 @@
 .successPanel h2,
 .panelHeader h2 {
   margin: 0 0 22px;
-  color: #ffffff;
+  color: #101312;
   font-weight: 500;
 }
 
@@ -553,7 +553,7 @@
 
 .panelEyebrow {
   background: rgba(16, 19, 18, 0.05);
-  color: #ffffff;
+  color: #101312;
 }
 
 .searchBox {

@@ -111,7 +111,7 @@
 .secondaryBtn {
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: #ffffff;
-  color: #ffffff;
+  color: #101312;
 }
 
 .secondaryBtn:hover {
@@ -366,7 +366,7 @@
   background: #F4F4F4;
   border: none;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.10) inset, 0 4px 4px 0 rgba(0, 0, 0, 0.10);
-  color: #ffffff;
+  color: #101312;
   font: inherit;
   outline: none;
   transition: all 0.2s ease;

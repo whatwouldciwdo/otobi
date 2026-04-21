@@ -130,7 +130,7 @@
     gap: 10px;
     font-size: 1.15rem;
     font-weight: 500;
-    color: #ffffff;
+    color: #101312;
     margin: 0 0 8px;
 }
 
@@ -178,7 +178,7 @@
     border: none;
     border-radius: 12px;
     background: #F4F4F4;
-    color: #ffffff;
+    color: #101312;
     outline: none;
     transition: all 0.2s ease;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.06) inset;
