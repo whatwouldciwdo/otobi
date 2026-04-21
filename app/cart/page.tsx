@@ -10,7 +10,8 @@ import { FiTrash2, FiMinus, FiPlus } from "react-icons/fi";
 import styles from "./Cart.module.css";
 
 function CartProductImage({ src, alt }: { src: string; alt: string }) {
-    if (src.startsWith("/uploads/")) {
+    // Use plain <img> for external URLs (Supabase Storage) or legacy local /uploads/ paths
+    if (src.startsWith("/uploads/") || src.startsWith("http")) {
         return <img src={src} alt={alt} className={styles.itemImage} />;
     }
 

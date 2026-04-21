@@ -65,7 +65,8 @@ function ProductImage({
     alt: string;
     className?: string;
 }) {
-    if (src?.startsWith("/uploads/")) {
+    // Use plain <img> for external URLs (Supabase Storage) or legacy local /uploads/ paths
+    if (src?.startsWith("/uploads/") || src?.startsWith("http")) {
         return <img src={src} alt={alt} className={className} />;
     }
     return <Image src={src} alt={alt} fill className={className} />;
