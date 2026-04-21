@@ -7,6 +7,7 @@ import { FaStar } from "react-icons/fa";
 import { FiArrowLeft, FiCheckCircle } from "react-icons/fi";
 import styles from "./ProductDetail.module.css";
 import ProductActions from "./ProductActions";
+import prisma from "../../../lib/prisma";
 
 interface DBProduct {
     id: string;
@@ -43,22 +44,12 @@ function ProductDetailImage({
     return <Image src={src} alt={alt} fill className={className} priority />;
 }
 
-async function getProduct(id: string): Promise<DBProduct | null> {
-    try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/products/${id}`, {
-            cache: "no-store",
-        });
-        if (!res.ok) return null;
-        const data = await res.json();
-        return data.product ?? null;
-    } catch {
-        return null;
-    }
-}
-
 export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
-    const product = await getProduct(resolvedParams.id);
+
+    const product = await prisma.product.findUnique({
+        where: { id: resolvedParams.id },
+    }) as DBProduct | null;
 
     if (!product) {
         notFound();
@@ -66,11 +57,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
     let activePromos: ActivePromo[] = [];
     try {
-        const promosRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"}/api/promos`, { cache: "no-store" });
-        if (promosRes.ok) {
-            const data = await promosRes.json();
-            activePromos = data.promos ?? [];
-        }
+        const promos = await prisma.promo.findMany();
+        activePromos = promos as ActivePromo[];
     } catch {}
 
     let applicablePromo = null;
