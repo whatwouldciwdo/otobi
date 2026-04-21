@@ -9,7 +9,7 @@ export default function HeroV2() {
             <div className={styles.content}>
                 <div className={styles.textContent}>
                     <h1 className={styles.title}>
-                        <span className={styles.titleOutline}>360°</span> VEHICLE
+                        <span className={styles.titleOutline}></span> VEHICLE
                         <br />
                         PREMIUM PRODUCTS
                     </h1>

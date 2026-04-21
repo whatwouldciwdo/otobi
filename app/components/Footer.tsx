@@ -44,7 +44,6 @@ export default function Footer() {
                         <ul className={styles.linkList}>
                             <li><a href="#">Ceramic Coatings</a></li>
                             <li><a href="#">Maintenance</a></li>
-                            <li><a href="#">Marine</a></li>
                             <li><a href="#">Accessories</a></li>
                         </ul>
                     </div>
