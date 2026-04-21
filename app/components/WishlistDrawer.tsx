@@ -17,7 +17,6 @@ type WishlistProduct = {
 };
 
 function WishlistProductImage({ src, alt }: { src: string; alt: string }) {
-    // Use plain <img> for external URLs (Supabase Storage) or legacy local /uploads/ paths
     if (src.startsWith("/uploads/") || src.startsWith("http")) {
         return <img src={src} alt={alt} className={styles.itemImage} />;
     }

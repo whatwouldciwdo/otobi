@@ -36,7 +36,6 @@ function ProductDetailImage({
     alt: string;
     className?: string;
 }) {
-    // Use plain <img> for external URLs (Supabase Storage) or legacy local /uploads/ paths
     if (src?.startsWith("/uploads/") || src?.startsWith("http")) {
         return <img src={src} alt={alt} className={className} />;
     }

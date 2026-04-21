@@ -2,9 +2,6 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-// Use service role key if available, otherwise use publishable key
-// NOTE: For writing to Storage, you should add SUPABASE_SERVICE_ROLE_KEY to your Netlify env vars
-// and update line below. Using publishable key requires the bucket to allow public uploads.
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
@@ -45,11 +42,9 @@ export async function POST(req: NextRequest) {
     const ext = file.name.split(".").pop() || "jpg";
     const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}.${ext}`;
 
-    // Convert File to ArrayBuffer then to Buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to Supabase Storage
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const { error: uploadError } = await supabase.storage
@@ -67,7 +62,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get public URL
     const { data: publicUrlData } = supabase.storage
       .from(BUCKET_NAME)
       .getPublicUrl(uniqueName);
