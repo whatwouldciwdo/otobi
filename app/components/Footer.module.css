@@ -67,7 +67,7 @@
 .newsletterBtn {
     background: transparent;
     border: none;
-    color: #cda34f;
+    color: #cc0000;
     font-family: var(--font-oswald), sans-serif;
     font-size: 14px;
     font-weight: 600;
@@ -85,7 +85,7 @@
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0 0 20px 0;
-    color: #cda34f;
+    color: #cc0000;
     letter-spacing: 1px;
 }
 
@@ -121,7 +121,7 @@
 }
 
 .socialIcon:hover {
-    color: #cda34f;
+    color: #cc0000;
     transform: translateY(-2px);
 }
 

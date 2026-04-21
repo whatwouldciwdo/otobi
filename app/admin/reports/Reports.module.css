@@ -126,7 +126,7 @@
 }
 
 .exportIconWrapper[data-color="var(--neon-green)"] {
-  background: rgba(186, 249, 26, 0.2);
+  background: rgba(204, 0, 0, 0.2);
   color: #557A00;
 }
 
@@ -241,7 +241,7 @@
   padding: 8px 14px;
   border-radius: 8px;
   background: #101312;
-  color: #baf91a;
+  color: #cc0000;
   border: none;
   font-size: 0.8rem;
   font-weight: 600;

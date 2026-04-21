@@ -38,7 +38,7 @@
   right: 0%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(186, 249, 26, 0.15) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(204, 0, 0, 0.15) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -96,8 +96,8 @@
 
 .addBtn {
   border: none;
-  background: #baf91a;
-  color: #101312;
+  background: #cc0000;
+  color: #ffffff;
 }
 
 .addBtn:hover:not(:disabled) {
@@ -109,7 +109,7 @@
 .backLink {
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: #ffffff;
-  color: #101312;
+  color: #ffffff;
 }
 
 .secondaryBtn:hover:not(:disabled),
@@ -236,14 +236,14 @@
 }
 
 .stepActive {
-  background: #baf91a;
-  color: #101312;
-  box-shadow: 0 4px 14px rgba(186, 249, 26, 0.4);
+  background: #cc0000;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(204, 0, 0, 0.4);
 }
 
 .stepDone {
-  background: #101312;
-  color: #baf91a;
+  background: #ffffff;
+  color: #cc0000;
 }
 
 .stepLine {
@@ -266,7 +266,7 @@
 .successPanel h2,
 .panelHeader h2 {
   margin: 0 0 22px;
-  color: #101312;
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -321,8 +321,8 @@
 .formGroup input:focus,
 .formGroup textarea:focus {
   background: rgba(255, 255, 255, 0.8);
-  border-color: #baf91a;
-  box-shadow: 0 8px 24px rgba(186, 249, 26, 0.15), 0 0 0 2px rgba(186, 249, 26, 0.2);
+  border-color: #cc0000;
+  box-shadow: 0 8px 24px rgba(204, 0, 0, 0.15), 0 0 0 2px rgba(204, 0, 0, 0.2);
 }
 
 .dimensions,
@@ -360,9 +360,9 @@
 }
 
 .categoryItemSelected {
-  border-color: #baf91a;
-  background: #e2ff99;
-  color: #101312;
+  border-color: #cc0000;
+  background: #1e3a8a;
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -380,7 +380,7 @@
 
 .categoryItemSelected .categoryCheckbox {
   border-color: #101312;
-  background: #baf91a;
+  background: #cc0000;
 }
 
 .chips {
@@ -397,8 +397,8 @@
   gap: 8px;
   padding: 8px 14px;
   border-radius: 999px;
-  background: #101312;
-  color: #baf91a;
+  background: #ffffff;
+  color: #cc0000;
   border: none;
   font-weight: 500;
   font-size: 0.85rem;
@@ -505,8 +505,8 @@
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: #101312;
-  color: #baf91a;
+  background: #ffffff;
+  color: #cc0000;
   font-size: 2.5rem;
 }
 
@@ -553,7 +553,7 @@
 
 .panelEyebrow {
   background: rgba(16, 19, 18, 0.05);
-  color: #101312;
+  color: #ffffff;
 }
 
 .searchBox {

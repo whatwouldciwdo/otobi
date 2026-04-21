@@ -79,7 +79,7 @@
 .statItem strong {
     font-size: 1.8rem;
     font-weight: 700;
-    color: #baf91a;
+    color: #cc0000;
 }
 
 .statItem span {
@@ -239,7 +239,7 @@
 .youBadge {
     font-size: 0.68rem;
     font-weight: 700;
-    background: rgba(186,249,26,0.15);
+    background: rgba(204, 0, 0,0.15);
     color: #5a8200;
     padding: 2px 8px;
     border-radius: 999px;

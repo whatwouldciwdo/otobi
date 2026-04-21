@@ -99,12 +99,12 @@
 }
 
 .discoverBtn:hover {
-    background: rgba(205, 163, 79, 0.12);
+    background: rgba(3, 0, 46, 0.12);
     box-shadow:
         0 3px 5px rgba(0, 0, 0, 0.08) inset,
-        0 4px 14px rgba(205, 163, 79, 0.12),
-        0 0 0 1.5px #cda34f;
-    color: #9a7230;
+        0 4px 14px rgba(3, 0, 46, 0.12),
+        0 0 0 1.5px #03002e;
+    color: #03002e;
     gap: 18px;
 }
 

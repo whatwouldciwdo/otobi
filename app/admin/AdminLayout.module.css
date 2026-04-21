@@ -136,7 +136,7 @@
   left: 40%;
   width: 100%;
   height: 100%;
-  background: #baf91a;
+  background: #cc0000;
   border-radius: 50%;
 }
 
@@ -157,7 +157,7 @@
 .collapseBtn {
   border: none;
   background: transparent;
-  color: #101312;
+  color: #ffffff;
   font-size: 1.35rem;
   cursor: pointer;
 }
@@ -223,7 +223,7 @@
 .active {
   background: #101312;
   color: #ffffff;
-  box-shadow: inset 0 -6px 20px rgba(186, 249, 26, 0.2), inset 0 2px 4px rgba(255,255,255,0.1);
+  box-shadow: inset 0 -6px 20px rgba(204, 0, 0, 0.2), inset 0 2px 4px rgba(255,255,255,0.1);
 }
 
 .active:hover {
@@ -232,7 +232,7 @@
 }
 
 .active .navIcon {
-  color: #baf91a;
+  color: #cc0000;
 }
 
 .navIcon {
@@ -383,8 +383,8 @@
 }
 
 .activeIconBtn {
-  background: #e2ff99;
-  color: #101312;
+  background: #cc0000;
+  color: #ffffff;
 }
 
 .notificationBtn {
@@ -396,7 +396,7 @@
   justify-content: center;
   border: 1px solid rgba(0, 0, 0, 0.06);
   background: #ffffff;
-  color: #101312;
+  color: #ffffff;
   position: relative;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
@@ -408,7 +408,7 @@
   right: 12px;
   width: 8px;
   height: 8px;
-  background: #baf91a;
+  background: #cc0000;
   border-radius: 50%;
   border: 2px solid #ffffff;
 }
@@ -429,7 +429,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: #101312;
+  background: #ffffff;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -445,7 +445,7 @@
 
 .userDetails strong {
   font-size: 0.85rem;
-  color: #101312;
+  color: #ffffff;
 }
 
 .userDetails span {

@@ -90,10 +90,10 @@
 
 .dateOptActive {
   background: #101312;
-  color: #baf91a;
+  color: #cc0000;
   font-weight: 500;
 }
-.dateOptActive:hover { background: #1a1d1c; color: #baf91a; }
+.dateOptActive:hover { background: #1a1d1c; color: #cc0000; }
 
 .kpiGrid {
   display: grid;
@@ -131,7 +131,7 @@
 }
 
 .kpiIconWrapper[data-color="var(--neon-green)"] {
-  background: rgba(186, 249, 26, 0.2);
+  background: rgba(204, 0, 0, 0.2);
   color: #557A00;
 }
 
@@ -141,7 +141,7 @@
 }
 
 .kpiIconWrapper[data-color="var(--light-vi)"] {
-  background: rgba(226, 255, 153, 0.4);
+  background: rgba(30, 58, 138, 0.4);
   color: #3A6600;
 }
 
@@ -227,7 +227,7 @@
 
 .bar {
   width: 100%;
-  background: #baf91a;
+  background: #cc0000;
   border-radius: 4px 4px 0 0;
   transition: height 0.4s ease;
   min-height: 4px;
@@ -266,7 +266,7 @@
   margin: 0 0 20px;
   font-size: 1.05rem;
   font-weight: 500;
-  color: #101312;
+  color: #ffffff;
 }
 
 .empty {

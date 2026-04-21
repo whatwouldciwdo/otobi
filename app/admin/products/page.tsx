@@ -353,7 +353,7 @@ export default function AdminProducts() {
             <button type="button" className={styles.photoUploadCard} onClick={() => wizardFileInputRef.current?.click()}>
               <HiOutlinePhoto />
               <strong>Upload a photo</strong>
-              <span>Max size 25MB. JPG, PNG, WEBP</span>
+              <span>Max size 25MB. Sizing guide: 2260 x 2260px. JPG, PNG, WEBP</span>
             </button>
             {wizardData.photos.map((photo, index) => (
               <div key={`${photo.url}-${index}`} className={styles.photoCard}>

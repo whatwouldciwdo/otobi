@@ -99,8 +99,8 @@
 
 .addBtn {
   border: none;
-  background: #baf91a;
-  color: #101312;
+  background: #cc0000;
+  color: #ffffff;
 }
 
 .addBtn:hover {
@@ -111,7 +111,7 @@
 .secondaryBtn {
   border: 1px solid rgba(0, 0, 0, 0.08);
   background: #ffffff;
-  color: #101312;
+  color: #ffffff;
 }
 
 .secondaryBtn:hover {
@@ -310,7 +310,7 @@
   margin-top: 20px;
   border-radius: 20px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(135, 109, 255, 0.1), rgba(186, 249, 26, 0.1));
+  background: linear-gradient(135deg, rgba(135, 109, 255, 0.1), rgba(204, 0, 0, 0.1));
   border: 1px dashed rgba(0, 0, 0, 0.1);
 }
 
@@ -336,7 +336,7 @@
 }
 
 .active {
-  background: #e2ff99;
+  background: #1e3a8a;
   color: #3a6600;
 }
 
@@ -366,7 +366,7 @@
   background: #F4F4F4;
   border: none;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.10) inset, 0 4px 4px 0 rgba(0, 0, 0, 0.10);
-  color: #101312;
+  color: #ffffff;
   font: inherit;
   outline: none;
   transition: all 0.2s ease;
