@@ -1,9 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import styles from "./BlogIndex.module.css";
 import { FiArrowRight } from "react-icons/fi";
+
+export const metadata: Metadata = {
+    title: "Otobi Journal",
+    description: "Baca artikel terbaru seputar perawatan kendaraan, tips car care, ceramic coating, dan update produk terbaru dari Otobi.",
+    alternates: { canonical: "/blog" },
+    openGraph: {
+        title: "Otobi Journal | Tips & Panduan Car Care",
+        description: "Artikel, tips perawatan mobil, dan update produk dari tim Otobi.",
+        url: "/blog",
+        type: "website",
+    },
+};
 
 async function getPublishedBlogs() {
     try {

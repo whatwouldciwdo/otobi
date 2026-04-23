@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { FiShoppingBag, FiHeart, FiUser, FiMenu, FiX, FiSearch } from "react-icons/fi";
 import styles from "./Navbar.module.css";
 import { useShop } from "../context/ShopContext";
@@ -51,7 +52,7 @@ export default function Navbar({ forceScrolled = false }: NavbarProps = {}) {
                 <div className={styles.inner}>
                     
                     <Link href="/" className={styles.logo}>
-                        OTOBI
+                        <Image src="/images/logo.png" alt="OTOBI" width={140} height={35} style={{ objectFit: 'contain' }} />
                     </Link>
 
                     

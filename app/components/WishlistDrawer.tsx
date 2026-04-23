@@ -122,7 +122,7 @@ export default function WishlistDrawer() {
                     ) : (
                         <div className={styles.itemsList}>
                             {wishlistItems.map((item) => (
-                                <div key={item.id} className={styles.cartItem}>
+                                <div key={item.id} className={styles.cartItem} style={{ flexDirection: 'column', gap: '20px' }}>
                                     <Link
                                         href={`/products/${item.id}`}
                                         className={styles.itemLink}

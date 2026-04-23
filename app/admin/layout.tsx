@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useShop } from "../context/ShopContext";
 import styles from "./AdminLayout.module.css";
 import {
@@ -61,8 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.isOpen : ""} ${isSidebarCollapsed ? styles.isCollapsed : ""}`}>
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
-            <div className={styles.logoIcon}></div>
-            <h2>OTOBI</h2>
+            <Image src="/images/logo.png" alt="OTOBI" width={120} height={30} style={{ objectFit: 'contain' }} />
           </div>
           <button 
             className={styles.collapseBtn} 

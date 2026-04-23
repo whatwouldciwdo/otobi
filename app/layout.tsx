@@ -2,36 +2,52 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Otobi | Premium Car Care Products — Ceramic Coating & Auto Detailing",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://otobi.id"),
+  title: {
+    default: "OTOBI | Premium Car Care Products Indonesia",
+    template: "%s | OTOBI Car Care",
+  },
   description:
     "Otobi adalah brand produk perawatan kendaraan premium di Indonesia. Temukan ceramic coating, nano coating, car care products, dan aksesori otomotif terbaik.",
   keywords: [
-    "produk car care",
+    "otobi",
+    "otobi car care",
+    "produk car care indonesia",
     "ceramic coating indonesia",
     "nano ceramic coating",
     "produk perawatan mobil",
     "auto detailing products",
     "aksesori otomotif",
-    "otobi",
+    "perawatan kendaraan",
   ],
-  authors: [{ name: "Otobi" }],
+  authors: [{ name: "Otobi", url: process.env.NEXT_PUBLIC_BASE_URL || "https://otobi.id" }],
   creator: "Otobi",
   publisher: "Otobi",
-  robots: "index, follow",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   alternates: {
-    canonical: process.env.NEXT_PUBLIC_BASE_URL || "https://otomobi.co.id",
+    canonical: "/",
   },
   openGraph: {
-    title: "Otobi | Premium Car Care Products",
+    title: "OTOBI | Premium Car Care Products Indonesia",
     description: "Brand produk perawatan kendaraan premium — ceramic coating, car care, dan aksesori otomotif terbaik di Indonesia.",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "https://otomobi.co.id",
+    url: process.env.NEXT_PUBLIC_BASE_URL || "https://otobi.id",
     siteName: "OTOBI Car Care",
     images: [
       {
-        url: "/images/OTOBI-LOGO.jpeg",
+        url: "/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Otobi Premium Car Care Products",
+        alt: "OTOBI Premium Car Care Products",
       },
     ],
     locale: "id_ID",
@@ -39,9 +55,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Otobi | Premium Car Care Products",
+    title: "OTOBI | Premium Car Care Products Indonesia",
     description: "Brand produk perawatan kendaraan premium — ceramic coating, car care, dan aksesori otomotif terbaik.",
-    images: ["/images/OTOBI-LOGO.jpeg"],
+    images: ["/images/og-image.png"],
+    site: "@otobi_id",
+    creator: "@otobi_id",
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
   },
 };
 

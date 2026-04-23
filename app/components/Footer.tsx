@@ -1,4 +1,5 @@
 import styles from "./Footer.module.css";
+import Image from "next/image";
 import { FaInstagram, FaYoutube, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 
 export default function Footer() {
@@ -61,7 +62,7 @@ export default function Footer() {
 
                 <div className={styles.bottomBar}>
                     <div className={styles.bottomLeft}>
-                        <span className={styles.logoText}>OTOBI</span>
+                        <Image src="/images/logo.png" alt="OTOBI" width={120} height={30} style={{ objectFit: 'contain', marginBottom: '8px' }} />
                         <p>&copy; {new Date().getFullYear()} OTOBI Car Care. All Rights Reserved.</p>
                     </div>
                     <div className={styles.bottomLinks}>

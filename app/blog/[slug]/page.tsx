@@ -39,9 +39,10 @@ export async function generateMetadata(
     const images = blog.image ? [blog.image] : [];
 
     return {
-        title: `${title} | Otobi`,
+        title: title,
         description,
         keywords: (blog as any).keywords ? (blog as any).keywords.split(",") : [],
+        alternates: { canonical: `/blog/${resolvedParams.slug}` },
         openGraph: {
             title,
             description,
@@ -49,6 +50,7 @@ export async function generateMetadata(
             publishedTime: blog.createdAt?.toISOString(),
             authors: [blog.author || "Otobi"],
             images,
+            url: `/blog/${resolvedParams.slug}`,
         },
         twitter: {
             card: "summary_large_image",

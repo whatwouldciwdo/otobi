@@ -653,4 +653,13 @@
     .fieldGrid {
         grid-template-columns: 1fr;
     }
+
+    .card {
+        padding: 24px 16px;
+        border-radius: 20px;
+    }
+
+    .container {
+        padding: 0 16px;
+    }
 }
