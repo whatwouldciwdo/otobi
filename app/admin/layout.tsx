@@ -24,6 +24,7 @@ import {
   FiX,
   FiCommand,
   FiUsers,
+  FiLink,
 } from "react-icons/fi";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -50,6 +51,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: "Products", href: "/admin/products", icon: <FiBox /> },
     { label: "Blogs", href: "/admin/blogs", icon: <FiEdit3 /> },
     { label: "Users", href: "/admin/users", icon: <FiUsers /> },
+    { label: "Links", href: "/admin/links", icon: <FiLink /> },
   ];
 
   const otherNavItems = [

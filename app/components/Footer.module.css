@@ -111,18 +111,28 @@
 
 .socials {
     display: flex;
+    flex-direction: column;
     gap: 15px;
 }
 
 .socialIcon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     color: #a0aab8;
     font-size: 1.2rem;
+    text-decoration: none;
     transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .socialIcon:hover {
     color: #cc0000;
-    transform: translateY(-2px);
+    transform: translateX(4px);
+}
+
+.socialLabel {
+    font-size: 0.95rem;
+    font-family: var(--font-geist-sans), sans-serif;
 }
 
 .bottomBar {

@@ -136,3 +136,14 @@ model Blog {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model LinkItem {
+  id        String   @id @default(cuid())
+  title     String
+  url       String
+  iconType  String?  @default("default") // e.g. "tokopedia", "shopee", "instagram", "default"
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
