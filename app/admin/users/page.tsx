@@ -27,9 +27,14 @@ export default function AdminUsers() {
     const [search, setSearch] = useState("");
     const [filterRole, setFilterRole] = useState<FilterRole>("ALL");
     const [editingUser, setEditingUser] = useState<UserRow | null>(null);
+    const [isCreating, setIsCreating] = useState(false);
+    
+    // Form states
     const [editName, setEditName] = useState("");
+    const [editEmail, setEditEmail] = useState("");
     const [editRole, setEditRole] = useState<UserRole>("USER");
     const [editPassword, setEditPassword] = useState("");
+    
     const [saving, setSaving] = useState(false);
     const [saveMsg, setSaveMsg] = useState("");
 
@@ -50,35 +55,71 @@ export default function AdminUsers() {
     }, [user]);
 
     const startEdit = (u: UserRow) => {
+        setIsCreating(false);
         setEditingUser(u);
         setEditName(u.name ?? "");
+        setEditEmail(u.email);
         setEditRole(u.role);
+        setEditPassword("");
+        setSaveMsg("");
+    };
+
+    const startCreate = () => {
+        setEditingUser(null);
+        setIsCreating(true);
+        setEditName("");
+        setEditEmail("");
+        setEditRole("USER");
         setEditPassword("");
         setSaveMsg("");
     };
 
     const cancelEdit = () => {
         setEditingUser(null);
+        setIsCreating(false);
         setSaveMsg("");
     };
 
     const handleSave = async () => {
-        if (!user || !editingUser) return;
+        if (!user) return;
+        
+        if (isCreating) {
+            if (!editEmail || !editPassword) {
+                setSaveMsg("Email dan Password wajib diisi untuk pengguna baru.");
+                return;
+            }
+        } else if (!editingUser) {
+            return;
+        }
+
         setSaving(true);
         setSaveMsg("");
+        
         try {
-            const res = await fetch("/api/admin/users", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
+            const method = isCreating ? "POST" : "PUT";
+            const body = isCreating 
+                ? {
                     userId: user.id,
-                    targetId: editingUser.id,
+                    name: editName,
+                    email: editEmail,
+                    role: editRole,
+                    password: editPassword,
+                }
+                : {
+                    userId: user.id,
+                    targetId: editingUser!.id,
                     name: editName,
                     role: editRole,
                     password: editPassword || undefined,
-                }),
+                };
+
+            const res = await fetch("/api/admin/users", {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
             });
             const data = await res.json();
+            
             if (res.ok) {
                 setSaveMsg("Berhasil disimpan!");
                 await fetchUsers();
@@ -130,13 +171,13 @@ export default function AdminUsers() {
     return (
         <div className={styles.pageContainer}>
             {/* Hero */}
-            {!editingUser && (
+            {!editingUser && !isCreating && (
                 <section className={styles.hero}>
                     <div className={styles.bgGlow} />
                     <div>
                         <span className={styles.heroBadge}>User management</span>
                         <h1>Kelola pengguna Otobi.</h1>
-                        <p>Lihat, edit role, atau hapus akun pengguna yang terdaftar di platform.</p>
+                        <p>Lihat, edit role, buat akun baru, atau hapus akun pengguna yang terdaftar di platform.</p>
                     </div>
                     <div className={styles.heroStats}>
                         <div className={styles.statItem}>
@@ -156,24 +197,26 @@ export default function AdminUsers() {
             )}
 
             <div className={styles.workspace}>
-                {editingUser ? (
+                {(editingUser || isCreating) ? (
                     /* Editor Panel */
                     <div className={styles.editorPanelFull}>
                         <div className={styles.editorHeader}>
-                            <span className={styles.panelEyebrow}>User editor</span>
-                            <h2>Edit Pengguna</h2>
+                            <span className={styles.panelEyebrow}>{isCreating ? "New user" : "User editor"}</span>
+                            <h2>{isCreating ? "Tambah Pengguna Baru" : "Edit Pengguna"}</h2>
                         </div>
 
                         <div className={styles.editorBody}>
-                            <div className={styles.editorUserInfo}>
-                                <div className={`${styles.avatar} ${styles.avatarLg} ${editingUser.role === "ADMIN" ? styles.avatarAdmin : ""}`}>
-                                    {(editingUser.name ?? editingUser.email).charAt(0).toUpperCase()}
+                            {!isCreating && editingUser && (
+                                <div className={styles.editorUserInfo}>
+                                    <div className={`${styles.avatar} ${styles.avatarLg} ${editingUser.role === "ADMIN" ? styles.avatarAdmin : ""}`}>
+                                        {(editingUser.name ?? editingUser.email).charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <strong>{editingUser.name ?? "No name"}</strong>
+                                        <p>{editingUser.email}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <strong>{editingUser.name ?? "No name"}</strong>
-                                    <p>{editingUser.email}</p>
-                                </div>
-                            </div>
+                            )}
 
                             <div className={styles.fieldGroup}>
                                 <label><FiUser /> Nama</label>
@@ -183,6 +226,19 @@ export default function AdminUsers() {
                                     placeholder="Nama pengguna"
                                 />
                             </div>
+
+                            {isCreating && (
+                                <div className={styles.fieldGroup}>
+                                    <label><FiMail /> Email</label>
+                                    <input
+                                        type="email"
+                                        value={editEmail}
+                                        onChange={(e) => setEditEmail(e.target.value)}
+                                        placeholder="Alamat email pengguna"
+                                        required
+                                    />
+                                </div>
+                            )}
 
                             <div className={styles.fieldGroup}>
                                 <label><FiShield /> Role</label>
@@ -196,23 +252,24 @@ export default function AdminUsers() {
                                     <button
                                         className={`${styles.roleBtn} ${editRole === "ADMIN" ? styles.roleBtnActive : ""} ${styles.roleBtnAdmin}`}
                                         onClick={() => setEditRole("ADMIN")}
-                                        disabled={editingUser.id === user?.id}
+                                        disabled={!isCreating && editingUser?.id === user?.id}
                                     >
                                         <FiShield /> Admin
                                     </button>
                                 </div>
-                                {editingUser.id === user?.id && (
+                                {!isCreating && editingUser?.id === user?.id && (
                                     <p className={styles.selfWarning}>Tidak bisa mengubah role akun sendiri.</p>
                                 )}
                             </div>
 
                             <div className={styles.fieldGroup}>
-                                <label>Password Baru <span className={styles.optionalLabel}>(opsional)</span></label>
+                                <label>Password {isCreating ? "" : "Baru "} <span className={styles.optionalLabel}>{isCreating ? "" : "(opsional)"}</span></label>
                                 <input
                                     type="password"
                                     value={editPassword}
                                     onChange={(e) => setEditPassword(e.target.value)}
-                                    placeholder="Kosongkan jika tidak diubah"
+                                    placeholder={isCreating ? "Password untuk pengguna baru" : "Kosongkan jika tidak diubah"}
+                                    required={isCreating}
                                 />
                             </div>
 
@@ -227,38 +284,42 @@ export default function AdminUsers() {
                                     <FiX /> Batal
                                 </button>
                                 <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
-                                    <FiCheck /> {saving ? "Menyimpan..." : "Simpan Perubahan"}
+                                    <FiCheck /> {saving ? "Menyimpan..." : "Simpan Pengguna"}
                                 </button>
                             </div>
 
-                            <div className={styles.dangerZone}>
-                                <p className={styles.dangerTitle}>Danger Zone</p>
-                                <button
-                                    className={styles.deleteFullBtn}
-                                    onClick={() => handleDelete(editingUser.id, editingUser.email)}
-                                    disabled={editingUser.id === user?.id}
-                                >
-                                    <FiTrash2 /> Hapus Akun Ini
-                                </button>
-                                {editingUser.id === user?.id && (
-                                    <p className={styles.selfWarning}>Tidak bisa menghapus akun sendiri.</p>
-                                )}
-                            </div>
+                            {!isCreating && editingUser && (
+                                <div className={styles.dangerZone}>
+                                    <p className={styles.dangerTitle}>Danger Zone</p>
+                                    <button
+                                        className={styles.deleteFullBtn}
+                                        onClick={() => handleDelete(editingUser.id, editingUser.email)}
+                                        disabled={editingUser.id === user?.id}
+                                    >
+                                        <FiTrash2 /> Hapus Akun Ini
+                                    </button>
+                                    {editingUser.id === user?.id && (
+                                        <p className={styles.selfWarning}>Tidak bisa menghapus akun sendiri.</p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 ) : (
                     /* Table panel */
                     <section className={styles.tablePanel}>
                         <div className={styles.panelHeader}>
-                            <div className={styles.searchBox}>
-                                <FiSearch className={styles.searchIcon} />
-                                <input
-                                    type="text"
-                                    placeholder="Cari nama atau email..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    className={styles.searchInput}
-                                />
+                            <div style={{display: 'flex', gap: '16px', flex: 1}}>
+                                <div className={styles.searchBox} style={{ flex: 1 }}>
+                                    <FiSearch className={styles.searchIcon} />
+                                    <input
+                                        type="text"
+                                        placeholder="Cari nama atau email..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className={styles.searchInput}
+                                    />
+                                </div>
                             </div>
                             <div className={styles.filterTabs}>
                                 {(["ALL", "ADMIN", "USER"] as FilterRole[]).map((role) => (
@@ -270,6 +331,9 @@ export default function AdminUsers() {
                                         {role === "ALL" ? "Semua" : role === "ADMIN" ? "Admin" : "Customer"}
                                     </button>
                                 ))}
+                                <button className={styles.addBtn} onClick={startCreate} style={{ marginLeft: "16px", background: "#cc0000", color: "#fff", border: "none", padding: "8px 16px", borderRadius: "8px", cursor: "pointer", display: "flex", alignItems: "center", gap: "8px", fontWeight: 600 }}>
+                                    <FiPlus /> Add User
+                                </button>
                             </div>
                         </div>
 

@@ -14,6 +14,14 @@ export const metadata: Metadata = {
 export const revalidate = 0;
 
 const renderIcon = (type: string | null) => {
+  if (type?.startsWith("http") || type?.startsWith("/")) {
+    return (
+      <div style={{ width: 24, height: 24, position: "relative" }}>
+        <Image src={type} alt="icon" fill style={{ objectFit: "contain" }} />
+      </div>
+    );
+  }
+
   switch (type) {
     case 'tokopedia':
       return (

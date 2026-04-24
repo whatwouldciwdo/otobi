@@ -80,3 +80,40 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+// POST /api/admin/users — create a new user
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { userId, name, email, role, password } = body;
+    if (!(await checkAdmin(userId))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (existingUser) {
+      return NextResponse.json({ error: "Email already registered" }, { status: 409 });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const id = `u_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+
+    const newUser = await prisma.user.create({
+      data: {
+        id,
+        name: name || email.split("@")[0],
+        email,
+        password: hashedPassword,
+        role: role || "USER",
+      },
+    });
+    return NextResponse.json({ success: true, user: { id: newUser.id, email: newUser.email } }, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

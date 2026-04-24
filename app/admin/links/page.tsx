@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import styles from "./AdminLinks.module.css";
-import { FiPlus, FiEdit2, FiTrash2, FiLink, FiInstagram } from "react-icons/fi";
+import { FiPlus, FiEdit2, FiTrash2, FiLink, FiInstagram, FiUpload } from "react-icons/fi";
 import { FaTiktok, FaWhatsapp } from "react-icons/fa";
 
 interface LinkItem {
@@ -23,8 +24,10 @@ export default function AdminLinksPage() {
   // Form state
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
-  const [iconType, setIconType] = useState("default");
+  const [iconType, setIconType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchLinks();
@@ -47,12 +50,12 @@ export default function AdminLinksPage() {
       setEditingLink(link);
       setTitle(link.title);
       setUrl(link.url);
-      setIconType(link.iconType || "default");
+      setIconType(link.iconType || "");
     } else {
       setEditingLink(null);
       setTitle("");
       setUrl("");
-      setIconType("default");
+      setIconType("");
     }
     setIsModalOpen(true);
   };
@@ -60,6 +63,36 @@ export default function AdminLinksPage() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingLink(null);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setIconType(data.url);
+      } else {
+        alert("Upload failed: " + data.error);
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("An error occurred during upload.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,9 +151,18 @@ export default function AdminLinksPage() {
   };
 
   const renderIcon = (type: string) => {
+    if (type?.startsWith("http") || type?.startsWith("/")) {
+      return (
+        <div style={{ width: 24, height: 24, position: "relative" }}>
+          <Image src={type} alt="icon" fill style={{ objectFit: "contain" }} />
+        </div>
+      );
+    }
+    
+    // Fallback for legacy icons if they exist in DB
     switch (type) {
       case "tokopedia":
-        return <span style={{ color: "#42B549", fontWeight: "bold" }}>Tp</span>; // Placeholder or use SVG later
+        return <span style={{ color: "#42B549", fontWeight: "bold" }}>Tp</span>;
       case "shopee":
         return <span style={{ color: "#EE4D2D", fontWeight: "bold" }}>Sh</span>;
       case "instagram":
@@ -133,8 +175,6 @@ export default function AdminLinksPage() {
         return <FiLink />;
     }
   };
-
-  if (loading) return <div className={styles.loading}>Loading links...</div>;
 
   return (
     <div className={styles.container}>
@@ -203,26 +243,41 @@ export default function AdminLinksPage() {
                 />
               </div>
               <div className={styles.formGroup}>
-                <label>Icon Platform</label>
-                <select
-                  className={styles.select}
-                  value={iconType}
-                  onChange={(e) => setIconType(e.target.value)}
-                >
-                  <option value="default">Default Link Icon</option>
-                  <option value="tokopedia">Tokopedia</option>
-                  <option value="shopee">Shopee</option>
-                  <option value="instagram">Instagram</option>
-                  <option value="tiktok">TikTok</option>
-                  <option value="whatsapp">WhatsApp</option>
-                </select>
+                <label>Link Icon (Image)</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
+                  {iconType && (iconType.startsWith("http") || iconType.startsWith("/")) ? (
+                    <div style={{ width: 40, height: 40, position: "relative", border: "1px solid #ddd", borderRadius: "8px", overflow: "hidden" }}>
+                      <Image src={iconType} alt="preview" fill style={{ objectFit: "cover" }} />
+                    </div>
+                  ) : iconType ? (
+                    <div style={{ width: 40, height: 40, display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f0f0", borderRadius: "8px" }}>
+                      {renderIcon(iconType)}
+                    </div>
+                  ) : null}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    id="icon-upload"
+                  />
+                  <label htmlFor="icon-upload" className={styles.cancelBtn} style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                    <FiUpload /> {isUploading ? "Uploading..." : iconType ? "Change Icon" : "Upload Icon"}
+                  </label>
+                  {iconType && (
+                    <button type="button" className={styles.iconBtn} style={{ color: "#cc0000" }} onClick={() => setIconType("")} title="Remove Icon">
+                      <FiTrash2 />
+                    </button>
+                  )}
+                </div>
               </div>
               
               <div className={styles.modalActions}>
                 <button type="button" className={styles.cancelBtn} onClick={handleCloseModal}>
                   Cancel
                 </button>
-                <button type="submit" className={styles.saveBtn} disabled={isSubmitting}>
+                <button type="submit" className={styles.saveBtn} disabled={isSubmitting || isUploading}>
                   {isSubmitting ? "Saving..." : "Save Link"}
                 </button>
               </div>
