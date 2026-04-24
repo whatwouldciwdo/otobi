@@ -28,7 +28,7 @@ import {
 } from "react-icons/fi";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useShop();
+  const { user, logout, isInitialized } = useShop();
   const router = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -36,12 +36,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    if (!user || user.role !== "ADMIN") {
-      router.replace("/auth?redirect=/admin");
+    if (isInitialized) {
+      if (!user || user.role !== "ADMIN") {
+        router.replace("/auth?redirect=/admin");
+      }
     }
-  }, [user, router]);
+  }, [user, router, isInitialized]);
 
-  if (!user || user.role !== "ADMIN") return null;
+  if (!isInitialized || !user || user.role !== "ADMIN") return null;
 
   const mainNavItems = [
     { label: "Dashboard", href: "/admin", icon: <FiHome /> },
@@ -184,3 +186,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+

@@ -43,6 +43,7 @@ interface ShopContextType {
     setIsCartOpen: (isOpen: boolean) => void;
     isWishlistOpen: boolean;
     setIsWishlistOpen: (isOpen: boolean) => void;
+    isInitialized: boolean;
 }
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
@@ -55,6 +56,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
     
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     
     useEffect(() => {
@@ -69,6 +71,8 @@ export function ShopProvider({ children }: { children: ReactNode }) {
             if (savedUser) setUser(JSON.parse(savedUser));
         } catch (e) {
             console.error("Failed to load state from local storage", e);
+        } finally {
+            setIsInitialized(true);
         }
     }, []);
 
@@ -214,6 +218,7 @@ export function ShopProvider({ children }: { children: ReactNode }) {
                 setIsCartOpen,
                 isWishlistOpen,
                 setIsWishlistOpen,
+                isInitialized,
             }}
         >
             {children}
@@ -228,3 +233,4 @@ export function useShop() {
     }
     return context;
 }
+
