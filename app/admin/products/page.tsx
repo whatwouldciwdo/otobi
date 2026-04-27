@@ -63,9 +63,9 @@ const EMPTY_WIZARD: WizardData = {
 };
 
 const CATEGORY_GROUPS = [
-  { section: "Automotive", items: ["Car Wash", "Coating Kendaraan", "Perawatan Interior", "Perawatan Body", "Perawatan Kaca", "Perawatan Ban dan Velg"] },
+  { section: "Automotive", items: ["Car Wash", "Coating Kendaraan", "Perawatan Interior", "Perawatan Body", "Perawatan Kaca", "Perawatan Ban dan Velg", "Perawatan Kendaraan", "Perawatan Mesin"] },
   { section: "Detailing Tools", items: ["Lap Microfiber", "Sikat dan Kuas Detailing", "Sarung Tangan Cuci Kendaraan", "Vacuum Cleaner", "Kebutuhan Poles", "Restorasi Perawatan Trim"] },
-  { section: "Lifestyle", items: ["Parfum Mobil", "Sarung Jok Stir", "Pengusir Tikus", "Perawatan Sepeda", "Aksesori Garasi", "Produk Gift Set"] },
+  { section: "Lifestyle", items: ["Parfum Mobil", "Sarung Jok Stir", "Pengusir Tikus", "Aksesori Garasi", "Produk Gift Set"] },
 ];
 
 const STEPS = [

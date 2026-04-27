@@ -4,7 +4,7 @@ import { checkAdmin } from "../db";
 import prisma from "../../../../lib/prisma";
 import bcrypt from "bcryptjs";
 
-// GET /api/admin/users — list all users
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
@@ -29,7 +29,7 @@ export async function GET(req: Request) {
   }
 }
 
-// PUT /api/admin/users — update user (name, role, password)
+
 export async function PUT(req: Request) {
   try {
     const body = await req.json();
@@ -56,7 +56,6 @@ export async function PUT(req: Request) {
   }
 }
 
-// DELETE /api/admin/users — delete a user
 export async function DELETE(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
@@ -71,7 +70,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: "Tidak bisa menghapus akun Anda sendiri." }, { status: 400 });
   }
   try {
-    // Delete cart + wishlist first (cascade should handle it, but just in case)
+    
     await prisma.cartItem.deleteMany({ where: { userId: targetId } });
     await prisma.wishlistItem.deleteMany({ where: { userId: targetId } });
     await prisma.user.delete({ where: { id: targetId } });
@@ -81,7 +80,7 @@ export async function DELETE(req: Request) {
   }
 }
 
-// POST /api/admin/users — create a new user
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();

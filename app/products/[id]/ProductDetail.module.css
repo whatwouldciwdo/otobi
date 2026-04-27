@@ -143,6 +143,7 @@
     color: #666666;
     line-height: 1.7;
     margin: 0;
+    white-space: pre-wrap;
 }
 
 /* Actions */
