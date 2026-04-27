@@ -71,7 +71,7 @@ export default function Footer() {
 
                 <div className={styles.bottomBar}>
                     <div className={styles.bottomLeft}>
-                        <Image src="/images/logo.png" alt="OTOBI" width={120} height={30} style={{ objectFit: 'contain', marginBottom: '8px' }} />
+                        <Image src="/images/logo.PNG" alt="OTOBI" width={120} height={30} style={{ objectFit: 'contain', marginBottom: '8px' }} />
                         <p>&copy; {new Date().getFullYear()} OTOBI Car Care. All Rights Reserved.</p>
                     </div>
                     <div className={styles.bottomLinks}>

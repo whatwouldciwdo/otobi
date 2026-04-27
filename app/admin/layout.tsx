@@ -66,7 +66,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className={`${styles.sidebar} ${isSidebarOpen ? styles.isOpen : ""} ${isSidebarCollapsed ? styles.isCollapsed : ""}`}>
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
-            <Image src="/images/logo.png" alt="OTOBI" width={120} height={30} style={{ objectFit: 'contain' }} />
+            <Image src="/images/logo.PNG" alt="OTOBI" width={120} height={30} style={{ objectFit: 'contain' }} />
           </div>
           <button 
             className={styles.collapseBtn} 

@@ -52,7 +52,7 @@ export default function Navbar({ forceScrolled = false }: NavbarProps = {}) {
                 <div className={styles.inner}>
                     
                     <Link href="/" className={styles.logo}>
-                        <Image src="/images/logo.png" alt="OTOBI" width={140} height={35} style={{ objectFit: 'contain' }} />
+                        <Image src="/images/logo.PNG" alt="OTOBI" width={140} height={35} style={{ objectFit: 'contain' }} />
                     </Link>
 
                     

@@ -83,7 +83,7 @@ export default async function LinksPage() {
         <section className={styles.profileSection}>
           <div className={styles.logoContainer}>
             <Image
-              src="/images/logo.png"
+              src="/images/logo.PNG"
               alt="Otobi Auto Care"
               width={180}
               height={45}
