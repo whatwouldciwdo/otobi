@@ -9,8 +9,21 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
   try {
-    const products = await prisma.product.findMany({
+    const rawProducts = await prisma.product.findMany({
       orderBy: { createdAt: "desc" },
+    });
+    // Parse categories JSON if stored as array, else wrap single string
+    const products = rawProducts.map((p) => {
+      let categories: string[] = [];
+      if (p.category) {
+        try {
+          const parsed = JSON.parse(p.category);
+          categories = Array.isArray(parsed) ? parsed : [parsed];
+        } catch {
+          categories = [p.category];
+        }
+      }
+      return { ...p, categories, category: categories[0] ?? null };
     });
     return NextResponse.json({ products });
   } catch (error: any) {
@@ -20,11 +33,14 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { userId, title, description, price, weight, image, category } = body;
+    const { userId, title, description, price, weight, image, categories } = body;
     if (!(await checkAdmin(userId))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
     const id = `prod_${Date.now()}`;
+    const categoryJson = Array.isArray(categories) && categories.length > 0
+      ? JSON.stringify(categories)
+      : null;
     await prisma.product.create({
       data: {
         id,
@@ -33,7 +49,7 @@ export async function POST(req: Request) {
         price: parseInt(price),
         weight: parseInt(weight ?? 300),
         image: image ?? "/images/otobi-special-product.png",
-        category: category ?? null,
+        category: categoryJson,
       },
     });
     return NextResponse.json({ success: true, id });
@@ -44,11 +60,13 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   try {
     const body = await req.json();
-    const { userId, id, title, description, price, weight, image, category } =
-      body;
+    const { userId, id, title, description, price, weight, image, categories } = body;
     if (!(await checkAdmin(userId))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
+    const categoryJson = Array.isArray(categories) && categories.length > 0
+      ? JSON.stringify(categories)
+      : null;
     await prisma.product.update({
       where: { id },
       data: {
@@ -57,7 +75,7 @@ export async function PUT(req: Request) {
         price: parseInt(price),
         weight: parseInt(weight ?? 300),
         image,
-        category: category ?? null,
+        category: categoryJson,
       },
     });
     return NextResponse.json({ success: true });

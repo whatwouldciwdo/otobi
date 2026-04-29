@@ -25,6 +25,7 @@ type Product = {
   weight: number;
   image: string;
   category: string;
+  categories: string[];
 };
 
 type WizardData = {
@@ -47,6 +48,7 @@ const EMPTY_EDIT_FORM = {
   weight: "300",
   image: "",
   category: "",
+  categories: [] as string[],
 };
 
 const EMPTY_WIZARD: WizardData = {
@@ -132,15 +134,30 @@ export default function AdminProducts() {
 
   const activateProduct = (product: Product) => {
     setSelectedProduct(product);
+    const cats = Array.isArray(product.categories) && product.categories.length > 0
+      ? product.categories
+      : product.category ? [product.category] : [];
     setEditForm({
       title: product.title,
       description: product.description,
       price: product.price,
       weight: String(product.weight),
       image: product.image,
-      category: product.category || "",
+      category: cats[0] ?? "",
+      categories: cats,
     });
     setMode("catalog");
+  };
+
+  const toggleEditCategory = (category: string) => {
+    setEditForm((prev) => {
+      const cats = prev.categories ?? [];
+      const exists = cats.includes(category);
+      if (exists) return { ...prev, categories: cats.filter((c) => c !== category), category: cats.filter((c) => c !== category)[0] ?? "" };
+      if (cats.length >= 3) return prev;
+      const next = [...cats, category];
+      return { ...prev, categories: next, category: next[0] };
+    });
   };
 
   const startWizard = () => {
@@ -201,11 +218,20 @@ export default function AdminProducts() {
       const res = await fetch("/api/admin/products", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id, id: selectedProduct.id, ...editForm }),
+        body: JSON.stringify({
+          userId: user.id,
+          id: selectedProduct.id,
+          title: editForm.title,
+          description: editForm.description,
+          price: editForm.price,
+          weight: editForm.weight,
+          image: editForm.image,
+          categories: editForm.categories,
+        }),
       });
       if (res.ok) {
         await fetchProducts();
-        activateProduct({ ...selectedProduct, ...editForm, weight: Number(editForm.weight) });
+        activateProduct({ ...selectedProduct, ...editForm, weight: Number(editForm.weight), categories: editForm.categories });
       }
     } finally {
       setSaving(false);
@@ -252,7 +278,7 @@ export default function AdminProducts() {
           price: wizardData.price,
           weight: wizardData.weight || "300",
           image: wizardData.photos[0]?.url || "",
-          category: wizardData.categories[0] || "",
+          categories: wizardData.categories,
         }),
       });
       const data = await res.json();
@@ -266,12 +292,23 @@ export default function AdminProducts() {
     }
   };
 
-  const categories = Array.from(new Set(products.map((product) => product.category).filter(Boolean))) as string[];
+  const categories = Array.from(
+    new Set(
+      products.flatMap((p) =>
+        Array.isArray(p.categories) && p.categories.length > 0
+          ? p.categories
+          : p.category ? [p.category] : []
+      )
+    )
+  ) as string[];
   const filteredProducts = products.filter((product) => {
     const matchesQuery =
       product.title.toLowerCase().includes(query.toLowerCase()) ||
       product.description.toLowerCase().includes(query.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || product.category === categoryFilter;
+    const productCats: string[] = Array.isArray(product.categories) && product.categories.length > 0
+      ? product.categories
+      : product.category ? [product.category] : [];
+    const matchesCategory = categoryFilter === "all" || productCats.includes(categoryFilter);
     return matchesQuery && matchesCategory;
   });
   const totalValue = products.reduce((sum, product) => sum + Number(product.price || 0), 0);
@@ -517,8 +554,34 @@ export default function AdminProducts() {
                 </div>
               </div>
               <div className={styles.formGroup}>
-                <label>Kategori</label>
-                <input value={editForm.category} onChange={(e) => setEditForm((prev) => ({ ...prev, category: e.target.value }))} />
+                <label>Kategori (max. 3)</label>
+                <div className={styles.categoryColumns} style={{ marginBottom: 8 }}>
+                  {CATEGORY_GROUPS.map((group) => (
+                    <div key={group.section} className={styles.categoryGroup}>
+                      <h3>{group.section}</h3>
+                      {group.items.map((item) => {
+                        const selected = (editForm.categories ?? []).includes(item);
+                        return (
+                          <button key={item} type="button" className={`${styles.categoryItem} ${selected ? styles.categoryItemSelected : ""}`} onClick={() => toggleEditCategory(item)}>
+                            <span className={styles.categoryCheckbox}>{selected ? <HiOutlineCheckCircle /> : ""}</span>
+                            {item}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.selectedCategories}>
+                  <strong>Dipilih:</strong>
+                  <div className={styles.chips}>
+                    {(editForm.categories ?? []).length === 0 && <span className={styles.emptyChip}>Belum ada kategori</span>}
+                    {(editForm.categories ?? []).map((item) => (
+                      <button key={item} type="button" className={styles.chip} onClick={() => toggleEditCategory(item)}>
+                        {item} <span>x</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
               <div className={styles.formGroup}>
                 <label>Deskripsi</label>
@@ -571,7 +634,15 @@ export default function AdminProducts() {
                           <strong>{product.title}</strong>
                           <span>{formatCurrency(Number(product.price || 0))}</span>
                         </div>
-                        <p>{product.category || "Tanpa kategori"}</p>
+                        {Array.isArray(product.categories) && product.categories.length > 0 ? (
+                          <div className={styles.categoryPills}>
+                            {product.categories.map((cat: string) => (
+                              <span key={cat} className={styles.categoryPill}>{cat}</span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p>{product.category || "Tanpa kategori"}</p>
+                        )}
                         <small>{product.weight} gr</small>
                       </div>
                     </button>

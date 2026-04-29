@@ -325,11 +325,33 @@
   box-shadow: 0 8px 24px rgba(204, 0, 0, 0.15), 0 0 0 2px rgba(204, 0, 0, 0.2);
 }
 
-.dimensions,
-.twoCol {
+.dimensions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.categoryPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.categoryPill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(204, 0, 0, 0.08);
+  color: #cc0000;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .categoryColumns {
