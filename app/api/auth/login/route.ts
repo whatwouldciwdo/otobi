@@ -42,6 +42,12 @@ export async function POST(req: Request) {
         { status: 401 },
       );
     }
+    if (!user.isVerified) {
+      return NextResponse.json(
+        { error: "Akun belum diverifikasi. Cek email kamu untuk kode OTP.", requiresVerification: true, email: user.email },
+        { status: 403 },
+      );
+    }
     return NextResponse.json({
       user: {
         id: user.id,

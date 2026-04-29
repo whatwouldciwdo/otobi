@@ -28,6 +28,7 @@ model User {
   areaId        String?
   areaName      String?
   role          Role           @default(USER)
+  isVerified    Boolean        @default(false)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   cartItems     CartItem[]
@@ -47,6 +48,16 @@ model Product {
   updatedAt     DateTime       @updatedAt
   cartItems     CartItem[]
   wishlistItems WishlistItem[]
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
 }
 
 model CartItem {

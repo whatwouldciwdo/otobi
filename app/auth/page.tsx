@@ -40,13 +40,20 @@ function AuthForm() {
 
             const data = await res.json();
 
+            // Redirect ke halaman OTP jika perlu verifikasi
+            if (data.requiresVerification) {
+                const params = new URLSearchParams({ email: data.email ?? email });
+                if (redirectUrl !== "/") params.set("redirect", redirectUrl);
+                router.push(`/auth/verify-email?${params.toString()}`);
+                return;
+            }
+
             if (!res.ok) {
                 setError(data.error ?? "Something went wrong. Please try again.");
                 setLoading(false);
                 return;
             }
 
-            
             login(data.user.name, data.user.email, data.user.id, data.user.phone ?? "", data.user.role ?? "USER", data.user.address ?? "", data.user.areaId ?? "", data.user.areaName ?? "");
             router.push(redirectUrl);
         } catch {

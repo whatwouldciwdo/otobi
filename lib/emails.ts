@@ -13,6 +13,55 @@ const fmt = (n: number) =>
   }).format(n);
 
 // ─────────────────────────────────────────────────────────────
+// 0. Verification OTP Email  (otobi.noreply@arxenovasocial.com)
+// ─────────────────────────────────────────────────────────────
+export async function sendVerificationEmail(user: {
+  name: string;
+  email: string;
+  code: string;
+}) {
+  const html = `<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.07);">
+        <tr>
+          <td style="background:#101312;padding:28px 40px;">
+            <img src="${BASE_URL}/images/otobi-logo-white.png" alt="OTOBI" height="34" style="display:block;" />
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:36px 40px 20px;">
+            <h1 style="margin:0 0 10px;font-size:20px;color:#101312;font-weight:600;">Verifikasi Akunmu 🔐</h1>
+            <p style="margin:0 0 28px;color:#5c626e;font-size:14px;line-height:1.7;">Halo <strong>${user.name}</strong>, gunakan kode berikut untuk mengaktifkan akunmu. Kode berlaku selama <strong>15 menit</strong>.</p>
+            <div style="background:#f7f9fc;border-radius:16px;padding:28px;text-align:center;">
+              <div style="letter-spacing:0.3em;font-size:38px;font-weight:700;color:#cc0000;font-family:monospace;">${user.code}</div>
+            </div>
+            <p style="margin:20px 0 0;color:#a0a5ad;font-size:12px;">Jika kamu tidak mendaftar di OTOBI, abaikan email ini.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f7f9fc;padding:18px 40px;text-align:center;">
+            <p style="margin:0;color:#a0a5ad;font-size:12px;">© ${new Date().getFullYear()} OTOBI Detailing Studio</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  await noReplyMailer.sendMail({
+    from: `"OTOBI" <${process.env.SMTP_NOREPLY_USER}>`,
+    to: user.email,
+    subject: `${user.code} — Kode Verifikasi Akun OTOBI`,
+    html,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
 // 1. Order Receipt Email  (order.otobi@arxenovasocial.com)
 // ─────────────────────────────────────────────────────────────
 export async function sendOrderReceiptEmail(order: {

@@ -1,0 +1,39 @@
+.iconWrapper {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.otpRow {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0 0;
+}
+
+.otpInput {
+  width: 48px;
+  height: 60px;
+  border: 2px solid #e0e0e0;
+  border-radius: 14px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: #1a1a2e;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+  background: #fafafa;
+  font-family: monospace;
+}
+
+.otpInput:focus {
+  border-color: #cc0000;
+  box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.12);
+  background: #fff;
+}
+
+@media (max-width: 400px) {
+  .otpInput {
+    width: 40px;
+    height: 52px;
+    font-size: 20px;
+  }
+}

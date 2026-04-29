@@ -2,7 +2,11 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "../../../../lib/prisma";
-import { sendWelcomeEmail } from "../../../../lib/emails";
+import { sendVerificationEmail } from "../../../../lib/emails";
+
+function generateOTP(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 export async function POST(req: Request) {
   try {
@@ -15,54 +19,52 @@ export async function POST(req: Request) {
       );
     }
 
-    
     const existing = await prisma.user.findUnique({
       where: { email },
-      select: { id: true },
+      select: { id: true, isVerified: true },
     });
 
     if (existing) {
+      if (!existing.isVerified) {
+        // Akun sudah ada tapi belum verifikasi — kirim ulang OTP
+        const code = generateOTP();
+        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 menit
+        await prisma.verificationToken.deleteMany({ where: { email } });
+        await prisma.verificationToken.create({ data: { email, code, expiresAt } });
+        await sendVerificationEmail({ name: name ?? email.split("@")[0], email, code });
+        return NextResponse.json({ requiresVerification: true, email }, { status: 200 });
+      }
       return NextResponse.json(
         { error: "Email already registered." },
         { status: 409 },
       );
     }
 
-    
     const hashedPassword = await bcrypt.hash(password, 12);
-
-    
     const id = `u_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
-    
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         id,
         name: name ?? email.split("@")[0],
         email,
         password: hashedPassword,
         phone: phone ?? null,
+        isVerified: false,
       },
     });
 
-    // Kirim welcome email (fire-and-forget, tidak block response)
-    sendWelcomeEmail({ name: user.name ?? user.email, email: user.email }).catch(
-      (err) => console.error("[Email] Welcome email failed:", err.message),
-    );
+    // Buat OTP dan simpan ke DB
+    const code = generateOTP();
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 menit
+    await prisma.verificationToken.deleteMany({ where: { email } });
+    await prisma.verificationToken.create({ data: { email, code, expiresAt } });
+
+    // Kirim OTP ke email
+    await sendVerificationEmail({ name: name ?? email.split("@")[0], email, code });
 
     return NextResponse.json(
-      {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone ?? "",
-          address: user.address ?? "",
-          areaId: user.areaId ?? "",
-          areaName: user.areaName ?? "",
-          role: "USER",
-        },
-      },
+      { requiresVerification: true, email },
       { status: 201 },
     );
   } catch (error: any) {
