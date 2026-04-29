@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
+import { sendOrderReceiptEmail } from "../../../../lib/emails";
 
 export async function POST(req: Request) {
   try {
@@ -114,6 +115,22 @@ export async function POST(req: Request) {
         );
       }
     }
+
+    // Kirim receipt email (fire-and-forget)
+    sendOrderReceiptEmail({
+      id: orderId,
+      recipientName,
+      recipientEmail,
+      recipientAddress,
+      recipientAreaName: destinationAreaName,
+      courierCompany,
+      courierServiceName,
+      shippingCost,
+      subtotal,
+      total,
+      itemsJson: JSON.stringify(items),
+      createdAt: new Date(),
+    }).catch((err) => console.error("[Email] Order receipt failed:", err.message));
 
     if (!biteshipData?.success && !biteshipData?.id) {
       return NextResponse.json({

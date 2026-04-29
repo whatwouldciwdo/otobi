@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "../../../../lib/prisma";
+import { sendWelcomeEmail } from "../../../../lib/emails";
 
 export async function POST(req: Request) {
   try {
@@ -43,6 +44,11 @@ export async function POST(req: Request) {
         phone: phone ?? null,
       },
     });
+
+    // Kirim welcome email (fire-and-forget, tidak block response)
+    sendWelcomeEmail({ name: user.name ?? user.email, email: user.email }).catch(
+      (err) => console.error("[Email] Welcome email failed:", err.message),
+    );
 
     return NextResponse.json(
       {
