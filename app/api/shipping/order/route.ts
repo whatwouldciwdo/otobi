@@ -116,7 +116,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // Kirim receipt email (fire-and-forget)
     sendOrderReceiptEmail({
       id: orderId,
       recipientName,

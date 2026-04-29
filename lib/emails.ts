@@ -2,9 +2,6 @@ import { orderMailer, noReplyMailer } from "./mailer";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "https://otobi.id";
 
-// ─────────────────────────────────────────────────────────────
-// Helper: format currency IDR
-// ─────────────────────────────────────────────────────────────
 const fmt = (n: number) =>
   new Intl.NumberFormat("id-ID", {
     style: "currency",
@@ -12,9 +9,6 @@ const fmt = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n);
 
-// ─────────────────────────────────────────────────────────────
-// 0. Verification OTP Email  (otobi.noreply@arxenovasocial.com)
-// ─────────────────────────────────────────────────────────────
 export async function sendVerificationEmail(user: {
   name: string;
   email: string;
@@ -61,9 +55,6 @@ export async function sendVerificationEmail(user: {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
-// 1. Order Receipt Email  (order.otobi@arxenovasocial.com)
-// ─────────────────────────────────────────────────────────────
 export async function sendOrderReceiptEmail(order: {
   id: string;
   recipientName: string;
@@ -195,9 +186,6 @@ export async function sendOrderReceiptEmail(order: {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
-// 2. Welcome / Verifikasi Akun  (otobi.noreply@arxenovasocial.com)
-// ─────────────────────────────────────────────────────────────
 export async function sendWelcomeEmail(user: {
   name: string;
   email: string;

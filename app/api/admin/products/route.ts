@@ -12,7 +12,6 @@ export async function GET(req: Request) {
     const rawProducts = await prisma.product.findMany({
       orderBy: { createdAt: "desc" },
     });
-    // Parse categories JSON if stored as array, else wrap single string
     const products = rawProducts.map((p) => {
       let categories: string[] = [];
       if (p.category) {

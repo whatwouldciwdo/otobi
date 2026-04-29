@@ -14,7 +14,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Cari token
     const token = await prisma.verificationToken.findFirst({
       where: { email },
       orderBy: { createdAt: "desc" },
@@ -42,16 +41,13 @@ export async function POST(req: Request) {
       );
     }
 
-    // Aktifkan akun
     const user = await prisma.user.update({
       where: { email },
       data: { isVerified: true },
     });
 
-    // Hapus token
     await prisma.verificationToken.deleteMany({ where: { email } });
 
-    // Kirim welcome email
     sendWelcomeEmail({ name: user.name ?? user.email, email: user.email }).catch(
       (err) => console.error("[Email] Welcome email failed:", err.message),
     );

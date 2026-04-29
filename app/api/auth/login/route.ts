@@ -13,16 +13,6 @@ export async function POST(req: Request) {
       );
     }
     const user = await prisma.user.findUnique({ where: { email } });
-    console.log(
-      "[LOGIN DEBUG] email:",
-      email,
-      "| password length:",
-      password?.length,
-      "| password:",
-      JSON.stringify(password),
-      "| user found:",
-      !!user,
-    );
     if (!user || !user.password) {
       return NextResponse.json(
         { error: "Invalid email or password." },
@@ -30,12 +20,6 @@ export async function POST(req: Request) {
       );
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log(
-      "[LOGIN DEBUG] bcrypt compare result:",
-      isPasswordValid,
-      "| hashed pw starts:",
-      user.password?.substring(0, 10),
-    );
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: "Invalid email or password." },

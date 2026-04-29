@@ -4,18 +4,16 @@ const SMTP_HOST = "mail.arxenovasocial.com";
 const SMTP_PORT = 465;
 const SMTP_PASS = process.env.SMTP_PASSWORD!;
 
-/** Transporter untuk email order receipt */
 export const orderMailer = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
-  secure: true, // SSL/TLS port 465
+  secure: true,
   auth: {
     user: process.env.SMTP_ORDER_USER!,
     pass: SMTP_PASS,
   },
 });
 
-/** Transporter untuk verifikasi akun baru */
 export const noReplyMailer = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
