@@ -18,11 +18,11 @@ interface DBProduct {
     price: string;
     weight: number;
     rating: number;
-    category: string | null; // stored as JSON array string e.g. '["Cuci Kendaraan"]'
+    category: string | null;
     description: string;
 }
 
-// Helper: parse category field (JSON array string or plain string) → string[]
+
 function parseCategories(category: string | null): string[] {
     if (!category) return [];
     try {
@@ -149,7 +149,7 @@ export default function ProductsPage() {
         if (selectedCategory === "Semua Produk") {
             matchesCategory = true;
         } else {
-            // Parse the stored JSON array category string
+
             const cats = parseCategories(p.category);
             matchesCategory = cats.some(
                 c => c.toLowerCase() === selectedCategory.toLowerCase()
