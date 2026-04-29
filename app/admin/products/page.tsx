@@ -121,7 +121,6 @@ export default function AdminProducts() {
       const data = await res.json();
       if (data.products) {
         setProducts(data.products);
-        if (!selectedProduct && data.products.length > 0) activateProduct(data.products[0]);
       }
     } finally {
       setLoading(false);
