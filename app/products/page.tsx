@@ -57,6 +57,7 @@ const CATEGORIES = [
     "Restorasi Perawatan Trim",
     "Perawatan Kendaraan",
     "Perawatan Mesin",
+    "Perawatan Sepeda",
     "Vacuum Cleaner",
     "Sikat dan Kuas Detailing",
     "Coating Kendaraan",
