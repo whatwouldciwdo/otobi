@@ -18,8 +18,19 @@ interface DBProduct {
     price: string;
     weight: number;
     rating: number;
-    category: string | null;
+    category: string | null; // stored as JSON array string e.g. '["Cuci Kendaraan"]'
     description: string;
+}
+
+// Helper: parse category field (JSON array string or plain string) → string[]
+function parseCategories(category: string | null): string[] {
+    if (!category) return [];
+    try {
+        const parsed = JSON.parse(category);
+        return Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+        return [category];
+    }
 }
 
 interface ActivePromo {
@@ -132,9 +143,17 @@ export default function ProductsPage() {
 
     const filteredProducts = products.filter(p => {
         const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedCategory === "Semua Produk"
-            || (p.category && p.category.toLowerCase() === selectedCategory.toLowerCase())
-            || ("" + p.category).includes(selectedCategory);
+
+        let matchesCategory = false;
+        if (selectedCategory === "Semua Produk") {
+            matchesCategory = true;
+        } else {
+            // Parse the stored JSON array category string
+            const cats = parseCategories(p.category);
+            matchesCategory = cats.some(
+                c => c.toLowerCase() === selectedCategory.toLowerCase()
+            );
+        }
 
         return matchesSearch && matchesCategory;
     });
