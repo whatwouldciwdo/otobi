@@ -61,7 +61,18 @@ export async function POST(req: Request) {
     await prisma.verificationToken.create({ data: { email, code, expiresAt } });
 
     // Kirim OTP ke email
-    await sendVerificationEmail({ name: name ?? email.split("@")[0], email, code });
+    try {
+      await sendVerificationEmail({ name: name ?? email.split("@")[0], email, code });
+    } catch (emailErr: any) {
+      console.error("[API /auth/register] SMTP error:", emailErr.message);
+      // Hapus user dan token jika email gagal terkirim
+      await prisma.verificationToken.deleteMany({ where: { email } });
+      await prisma.user.delete({ where: { email } }).catch(() => {});
+      return NextResponse.json(
+        { error: "Gagal mengirim email verifikasi. Pastikan email kamu valid dan coba lagi." },
+        { status: 503 },
+      );
+    }
 
     return NextResponse.json(
       { requiresVerification: true, email },
