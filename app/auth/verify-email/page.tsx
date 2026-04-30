@@ -106,7 +106,32 @@ function VerifyEmailForm() {
           <Image src="/images/OTOBI-LOGO.jpeg" alt="Otobi Logo" width={160} height={60} className={styles.logoImage} priority />
         </div>
 
-        <div className={otpStyles.iconWrapper}>🔐</div>
+        <div className={otpStyles.iconWrapper}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" className={otpStyles.verifyIcon}>
+            {/* Shield background */}
+            <path
+              d="M32 4L8 14v16c0 13.255 10.4 25.647 24 28 13.6-2.353 24-14.745 24-28V14L32 4z"
+              fill="#1a1a2e"
+              opacity="0.08"
+            />
+            <path
+              d="M32 8L10 17.333V30c0 11.782 9.244 22.818 22 25 12.756-2.182 22-13.218 22-25V17.333L32 8z"
+              fill="#1a1a2e"
+              opacity="0.15"
+            />
+            <path
+              d="M32 12L12 20.667V30c0 10.31 8.09 19.99 20 22 11.91-2.01 20-11.69 20-22V20.667L32 12z"
+              fill="#cc0000"
+            />
+            {/* Envelope */}
+            <rect x="21" y="25" width="22" height="16" rx="2" fill="white" opacity="0.95"/>
+            <path d="M21 27l11 8 11-8" stroke="#cc0000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            {/* Checkmark badge */}
+            <circle cx="44" cy="44" r="9" fill="white"/>
+            <circle cx="44" cy="44" r="7" fill="#22c55e"/>
+            <path d="M40.5 44l2.5 2.5 5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
         <h1 className={styles.title}>Verifikasi Email</h1>
         <p className={styles.subtitle}>
           Masukkan 6 digit kode yang dikirim ke<br />

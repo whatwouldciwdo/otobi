@@ -109,6 +109,7 @@ export async function POST(req: Request) {
         email,
         password: hashedPassword,
         role: role || "USER",
+        isVerified: true, // Akun yang dibuat admin langsung aktif, tidak perlu verifikasi email
       },
     });
     return NextResponse.json({ success: true, user: { id: newUser.id, email: newUser.email } }, { status: 201 });
