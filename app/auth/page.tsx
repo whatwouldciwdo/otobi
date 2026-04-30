@@ -125,7 +125,14 @@ function AuthForm() {
                     </div>
 
                     <div className={styles.inputGroup}>
-                        <label htmlFor="password" className={styles.label}>Password</label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center', marginBottom: '8px' }}>
+                            <label htmlFor="password" className={styles.label} style={{ marginBottom: 0 }}>Password</label>
+                            {isLogin && (
+                                <Link href="/auth/forgot-password" style={{ fontSize: '13px', color: '#666666', textDecoration: 'none', fontFamily: "var(--font-inter), 'Inter', sans-serif" }}>
+                                    Lupa password?
+                                </Link>
+                            )}
+                        </div>
                         <input
                             type="password"
                             id="password"

@@ -252,3 +252,51 @@ export async function sendWelcomeEmail(user: {
     html,
   });
 }
+
+export async function sendPasswordResetEmail(user: {
+  name: string;
+  email: string;
+  token: string;
+}) {
+  const resetLink = `${BASE_URL}/auth/reset-password?token=${user.token}`;
+
+  const html = `<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="540" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.07);">
+        <tr>
+          <td style="background:#101312;padding:28px 40px;">
+            <img src="${BASE_URL}/images/otobi-logo-white.png" alt="OTOBI" height="34" style="display:block;" />
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:36px 40px 20px;">
+            <h1 style="margin:0 0 10px;font-size:20px;color:#101312;font-weight:600;">Atur Ulang Password 🔒</h1>
+            <p style="margin:0 0 28px;color:#5c626e;font-size:14px;line-height:1.7;">Halo <strong>${user.name}</strong>, kami menerima permintaan untuk mengatur ulang password akun kamu. Klik tombol di bawah ini untuk membuat password baru. Link ini berlaku selama <strong>1 jam</strong>.</p>
+            <div style="text-align:center;margin-bottom:28px;">
+              <a href="${resetLink}" style="display:inline-block;background:#cc0000;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:600;font-size:15px;letter-spacing:0.5px;">Atur Ulang Password</a>
+            </div>
+            <p style="margin:20px 0 0;color:#a0a5ad;font-size:12px;">Jika kamu tidak merasa meminta atur ulang password, kamu bisa mengabaikan email ini. Password kamu akan tetap aman.</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f7f9fc;padding:18px 40px;text-align:center;">
+            <p style="margin:0;color:#a0a5ad;font-size:12px;">© ${new Date().getFullYear()} OTOBI Detailing Studio</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  await noReplyMailer.sendMail({
+    from: `"OTOBI" <${process.env.SMTP_NOREPLY_USER}>`,
+    to: user.email,
+    subject: `Atur Ulang Password Akun OTOBI kamu`,
+    html,
+  });
+}

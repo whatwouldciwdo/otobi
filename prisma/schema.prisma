@@ -60,6 +60,16 @@ model VerificationToken {
   @@index([email])
 }
 
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
 model CartItem {
   id        String   @id @default(cuid())
   quantity  Int      @default(1)
