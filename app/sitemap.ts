@@ -1,13 +1,15 @@
 import { MetadataRoute } from "next";
+import prisma from "@/lib/prisma";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://otobi.id";
 
 async function getPublishedBlogSlugs(): Promise<string[]> {
     try {
-        const res = await fetch(`${BASE_URL}/api/blogs`, { cache: "no-store" });
-        if (!res.ok) return [];
-        const data = await res.json();
-        return (data.blogs || []).map((b: { slug: string }) => b.slug);
+        const blogs = await prisma.blog.findMany({
+            where: { isPublished: true },
+            select: { slug: true },
+        });
+        return blogs.map((b) => b.slug);
     } catch {
         return [];
     }
@@ -15,10 +17,10 @@ async function getPublishedBlogSlugs(): Promise<string[]> {
 
 async function getProductIds(): Promise<string[]> {
     try {
-        const res = await fetch(`${BASE_URL}/api/products`, { cache: "no-store" });
-        if (!res.ok) return [];
-        const data = await res.json();
-        return (data.products || []).map((p: { id: string }) => p.id);
+        const products = await prisma.product.findMany({
+            select: { id: true },
+        });
+        return products.map((p) => p.id);
     } catch {
         return [];
     }
@@ -45,12 +47,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             lastModified: now,
             changeFrequency: "weekly",
             priority: 0.8,
-        },
-        {
-            url: `${BASE_URL}/about`,
-            lastModified: now,
-            changeFrequency: "monthly",
-            priority: 0.7,
         },
         {
             url: `${BASE_URL}/contact`,

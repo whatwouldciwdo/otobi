@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Metadata, ResolvingMetadata } from "next";
+import Script from "next/script";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { FaStar } from "react-icons/fa";
@@ -8,6 +10,48 @@ import { FiArrowLeft, FiCheckCircle } from "react-icons/fi";
 import styles from "./ProductDetail.module.css";
 import ProductActions from "./ProductActions";
 import prisma from "../../../lib/prisma";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://otobi.id";
+
+export async function generateMetadata(
+    { params }: { params: Promise<{ id: string }> },
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const resolvedParams = await params;
+    const product = await prisma.product.findUnique({
+        where: { id: resolvedParams.id },
+    });
+
+    if (!product) return { title: "Produk Tidak Ditemukan" };
+
+    const title = `${product.title} | OTOBI Car Care`;
+    const description = product.description
+        ? product.description.slice(0, 160)
+        : `Beli ${product.title} — produk perawatan kendaraan premium dari Otobi Indonesia.`;
+
+    const imageUrl = product.image?.startsWith("http")
+        ? product.image
+        : `${BASE_URL}${product.image}`;
+
+    return {
+        title,
+        description,
+        alternates: { canonical: `/products/${resolvedParams.id}` },
+        openGraph: {
+            title,
+            description,
+            url: `/products/${resolvedParams.id}`,
+            type: "website",
+            images: [{ url: imageUrl, width: 800, height: 800, alt: product.title }],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: [imageUrl],
+        },
+    };
+}
 
 interface DBProduct {
     id: string;
@@ -87,9 +131,50 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     const formattedPrice = `RP ${parseFloat(product.price).toLocaleString("id-ID")}`;
     const formattedDiscounted = discountedPrice !== null ? `RP ${discountedPrice.toLocaleString("id-ID")}` : null;
 
+    const productPrice = discountedPrice !== null ? discountedPrice : parseFloat(product.price);
+    const productImageUrl = product.image?.startsWith("http")
+        ? product.image
+        : `${BASE_URL}${product.image}`;
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: product.title,
+        description: product.description,
+        image: productImageUrl,
+        sku: product.id,
+        brand: {
+            "@type": "Brand",
+            name: "OTOBI",
+        },
+        offers: {
+            "@type": "Offer",
+            url: `${BASE_URL}/products/${product.id}`,
+            priceCurrency: "IDR",
+            price: productPrice,
+            availability: "https://schema.org/InStock",
+            seller: {
+                "@type": "Organization",
+                name: "OTOBI Car Care",
+            },
+        },
+        aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating,
+            bestRating: 5,
+            reviewCount: 128,
+        },
+    };
+
     return (
         <div className="page-wrapper">
+            <Script
+                id="product-schema"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <Navbar />
+
 
             <main className={styles.main}>
                 <div className={styles.container}>

@@ -39,23 +39,28 @@ export default function Home() {
         };
     }, [videoGone]);
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://otobi.id";
+
     const jsonLd = {
         "@context": "https://schema.org",
-        "@type": "AutoBodyShop",
-        "name": "Otobi Premium Auto Detailing",
-        "image": "https://otomobi.co.id/images/OTOBI-LOGO.jpeg",
-        "url": "https://otomobi.co.id",
-        "telephone": "+628111234567",
+        "@type": "AutoPartsStore",
+        "name": "OTOBI Car Care",
+        "image": `${BASE_URL}/images/OTOBI-LOGO.jpeg`,
+        "url": BASE_URL,
+        "telephone": "+6281781215",
         "address": {
             "@type": "PostalAddress",
-            "streetAddress": "Jl. Taman Sari No. 1",
+            "streetAddress": "Jl. Raya Duri Kosambi No.8a, RT.13/RW.7",
             "addressLocality": "Jakarta Barat",
             "addressRegion": "DKI Jakarta",
-            "postalCode": "11110",
+            "postalCode": "11750",
             "addressCountry": "ID"
         },
-        "description": "Premium produk premium perawatan kendaraan, ceramic coating, dan car care Indonesia.",
+        "description": "Brand produk perawatan kendaraan premium di Indonesia — ceramic coating, car care, dan aksesori otomotif terbaik.",
         "priceRange": "$$",
+        "sameAs": [
+            "https://www.instagram.com/otobi_id",
+        ]
     };
 
     return (
