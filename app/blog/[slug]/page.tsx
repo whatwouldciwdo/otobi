@@ -6,16 +6,15 @@ import { Metadata, ResolvingMetadata } from "next";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import styles from "./BlogDetail.module.css";
-import { FiClock, FiUser, FiArrowLeft } from "react-icons/fi";
+import { FiClock, FiUser, FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import prisma from "@/lib/prisma";
 import ShareButton from "./ShareButton";
+import ReadingProgress from "./ReadingProgress";
 
 // Fetch from DB securely server-side
 async function getBlogBySlug(slug: string) {
     try {
-        const blog = await prisma.blog.findUnique({
-            where: { slug }
-        });
+        const blog = await prisma.blog.findUnique({ where: { slug } });
         if (!blog || !blog.isPublished) return null;
         return blog;
     } catch (e) {
@@ -24,14 +23,28 @@ async function getBlogBySlug(slug: string) {
     }
 }
 
-// Generate dynamic metadata for SEO injection
+// Get related articles (other published blogs, max 3)
+async function getRelatedBlogs(currentSlug: string) {
+    try {
+        const blogs = await prisma.blog.findMany({
+            where: { isPublished: true, NOT: { slug: currentSlug } },
+            orderBy: { createdAt: "desc" },
+            take: 3,
+            select: { id: true, title: true, slug: true, image: true, author: true, createdAt: true, excerpt: true },
+        });
+        return blogs;
+    } catch {
+        return [];
+    }
+}
+
+// Generate dynamic metadata
 export async function generateMetadata(
     { params }: { params: Promise<{ slug: string }> },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
     const resolvedParams = await params;
     const blog = await getBlogBySlug(resolvedParams.slug);
-
     if (!blog) return { title: "Blog Not Found" };
 
     const title = (blog as any).metaTitle || blog.title;
@@ -39,47 +52,43 @@ export async function generateMetadata(
     const images = blog.image ? [blog.image] : [];
 
     return {
-        title: title,
+        title,
         description,
         keywords: (blog as any).keywords ? (blog as any).keywords.split(",") : [],
         alternates: { canonical: `/blog/${resolvedParams.slug}` },
         openGraph: {
-            title,
-            description,
+            title, description,
             type: "article",
             publishedTime: blog.createdAt?.toISOString(),
             authors: [blog.author || "Otobi"],
             images,
             url: `/blog/${resolvedParams.slug}`,
         },
-        twitter: {
-            card: "summary_large_image",
-            title,
-            description,
-            images,
-        },
+        twitter: { card: "summary_large_image", title, description, images },
     };
 }
 
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const resolvedParams = await params;
-    const blog = await getBlogBySlug(resolvedParams.slug);
+    const [blog, relatedBlogs] = await Promise.all([
+        getBlogBySlug(resolvedParams.slug),
+        getRelatedBlogs(resolvedParams.slug),
+    ]);
 
-    if (!blog) {
-        notFound();
-    }
+    if (!blog) notFound();
 
     const formattedDate = new Date(blog.createdAt).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
+        day: "numeric", month: "long", year: "numeric",
     });
 
     return (
         <div className="page-wrapper" style={{ backgroundColor: "#ffffff" }}>
-            <Navbar />
+            {/* Reading progress bar */}
+            <ReadingProgress />
 
-            {/* Fixed back button */}
+            <Navbar forceScrolled />
+
+            {/* Floating back button */}
             <nav className={styles.backNav}>
                 <Link href="/blog" className={styles.backBtn}>
                     <FiArrowLeft /> Kembali
@@ -88,50 +97,34 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
 
             <main>
                 <article>
-                    {/* ---- HERO: cinematic full-bleed if image exists ---- */}
-                    {blog.image ? (
-                        <div className={styles.hero}>
-                            <Image
+                    {/* ---- ARTICLE HEADER: clean white, centered ---- */}
+                    <header className={styles.articleHeader}>
+                        <div className={styles.articleMeta}>
+                            <span className={styles.categoryBadge}>
+                                {blog.author || "Otobi"}
+                            </span>
+                            <span className={styles.metaDot} />
+                            <span className={styles.metaDate}>
+                                <FiClock /> {formattedDate}
+                            </span>
+                        </div>
+
+                        <h1 className={styles.articleTitle}>{blog.title}</h1>
+
+                        {blog.excerpt && (
+                            <p className={styles.articleExcerpt}>{blog.excerpt}</p>
+                        )}
+                    </header>
+
+                    {/* ---- COVER IMAGE: inside content area ---- */}
+                    {blog.image && (
+                        <div className={styles.coverImageWrapper}>
+                            <img
                                 src={blog.image}
                                 alt={(blog as any).metaTitle || blog.title}
-                                fill
-                                priority
-                                className={styles.heroImage}
+                                className={styles.coverImage}
                             />
-                            <div className={styles.heroOverlay} />
-                            <div className={styles.heroContent}>
-                                <div className={styles.heroMeta}>
-                                    <span className={styles.heroAuthorBadge}>
-                                        <FiUser /> {blog.author || "Otobi Admin"}
-                                    </span>
-                                    <span className={styles.heroDate}>
-                                        <FiClock /> {formattedDate}
-                                    </span>
-                                </div>
-                                <h1 className={styles.heroTitle}>{blog.title}</h1>
-                                {blog.excerpt && (
-                                    <p className={styles.heroExcerpt}>{blog.excerpt}</p>
-                                )}
-                            </div>
                         </div>
-                    ) : (
-                        /* ---- No-image: dark typographic hero ---- */
-                        <header className={styles.textHeader}>
-                            <div className={styles.textHeaderInner}>
-                                <div className={styles.textHeaderMeta}>
-                                    <span className={styles.authorBadge}>
-                                        <FiUser /> {blog.author || "Otobi Admin"}
-                                    </span>
-                                    <span className={styles.dateBadge}>
-                                        <FiClock /> {formattedDate}
-                                    </span>
-                                </div>
-                                <h1 className={styles.textHeaderTitle}>{blog.title}</h1>
-                                {blog.excerpt && (
-                                    <p className={styles.textHeaderExcerpt}>{blog.excerpt}</p>
-                                )}
-                            </div>
-                        </header>
                     )}
 
                     {/* ---- READING AREA ---- */}
@@ -158,6 +151,45 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                         </footer>
                     </div>
                 </article>
+
+                {/* ---- RELATED ARTICLES ---- */}
+                {relatedBlogs.length > 0 && (
+                    <section className={styles.relatedSection}>
+                        <div className={styles.relatedInner}>
+                            <h2 className={styles.relatedHeading}>Artikel Lainnya</h2>
+                            <div className={styles.relatedGrid}>
+                                {relatedBlogs.map((related) => (
+                                    <Link
+                                        key={related.id}
+                                        href={`/blog/${related.slug}`}
+                                        className={styles.relatedCard}
+                                    >
+                                        <div className={styles.relatedImageWrapper}>
+                                            <Image
+                                                src={related.image || '/images/otobi-special-product.png'}
+                                                alt={related.title}
+                                                fill
+                                                className={styles.relatedImage}
+                                            />
+                                        </div>
+                                        <div className={styles.relatedContent}>
+                                            <div className={styles.relatedMeta}>
+                                                <span className={styles.relatedAuthor}>{related.author || "Otobi"}</span>
+                                                <span className={styles.metaDot} />
+                                                <span className={styles.relatedDate}>
+                                                    {new Date(related.createdAt).toLocaleDateString("id-ID", {
+                                                        day: "numeric", month: "short", year: "numeric",
+                                                    })}
+                                                </span>
+                                            </div>
+                                            <h3 className={styles.relatedTitle}>{related.title}</h3>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )}
             </main>
 
             <Footer />

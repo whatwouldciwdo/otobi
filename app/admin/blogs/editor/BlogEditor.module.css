@@ -94,6 +94,31 @@
     transform: none;
 }
 
+.previewBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: #ffffff;
+    color: #101312;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.previewBtn:hover {
+    background: #f3f0ff;
+    border-color: #876DFF;
+    color: #876DFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(135, 109, 255, 0.15);
+}
+
+
 .editorBody {
     display: grid;
     grid-template-columns: 1fr 380px;
@@ -430,4 +455,256 @@
 }
 @media (max-width: 680px) {
     .topBar { flex-wrap: wrap; }
+}
+
+/* ── Image Alt-Text Modal ───────────────────────────────────────────── */
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(16, 19, 18, 0.55);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    animation: modalFadeIn 0.18s ease;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modalBox {
+    background: #ffffff;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18), 0 4px 20px rgba(135, 109, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalSlideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px 0;
+}
+
+.modalTitle {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #101312;
+    margin: 0;
+}
+
+.modalClose {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #F4F4F4;
+    color: #5c626e;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.modalClose:hover {
+    background: #ffe5e5;
+    color: #cc0000;
+}
+
+.modalBody {
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* File drop zone */
+.fileDropZone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 160px;
+    border: 2px dashed rgba(135, 109, 255, 0.35);
+    border-radius: 16px;
+    background: #faf9ff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.fileDropZone:hover {
+    border-color: #876DFF;
+    background: #f3f0ff;
+}
+
+.fileDropPlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 24px;
+    text-align: center;
+}
+
+.fileDropIcon {
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.fileDropText {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #5c626e;
+}
+
+.fileDropHint {
+    font-size: 0.8rem;
+    color: #a0a5ad;
+}
+
+.filePreview {
+    width: 100%;
+    height: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Alt text field */
+.modalField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modalLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #5c626e;
+}
+
+.modalInput {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    border: none;
+    border-radius: 10px;
+    background: #F4F4F4;
+    color: #101312;
+    outline: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.06) inset;
+    box-sizing: border-box;
+}
+
+.modalInput::placeholder { color: #a0a5ad; }
+
+.modalInput:focus {
+    background: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05) inset, 0 0 0 2px #876DFF;
+}
+
+.modalHint {
+    font-size: 0.8rem;
+    color: #a0a5ad;
+    line-height: 1.5;
+}
+
+.modalError {
+    font-size: 0.85rem;
+    color: #cc0000;
+    background: #fff0f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 0;
+}
+
+/* Modal footer */
+.modalFooter {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 28px 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.modalCancelBtn {
+    padding: 12px 22px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    color: #5c626e;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modalCancelBtn:hover:not(:disabled) {
+    background: #f7f9fc;
+}
+
+.modalCancelBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.modalConfirmBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    background: #876DFF;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modalConfirmBtn:hover:not(:disabled) {
+    background: #7055ee;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(135, 109, 255, 0.35);
+}
+
+.modalConfirmBtn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Spinner */
+.spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }

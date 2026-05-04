@@ -3,11 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!;
+
+// MUST use service role key — anon key is blocked by RLS policies
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseServiceKey) {
+  console.error(
+    "[API /upload] SUPABASE_SERVICE_ROLE_KEY is not set in .env. " +
+    "Upload will fail. Get this key from Supabase Dashboard → Project Settings → API → service_role."
+  );
+}
 
 const BUCKET_NAME = "uploads";
+
 
 export async function POST(req: NextRequest) {
   try {
@@ -45,7 +53,14 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, supabaseServiceKey!);
+
+    if (!supabaseServiceKey) {
+      return NextResponse.json(
+        { error: "Server misconfiguration: SUPABASE_SERVICE_ROLE_KEY is not set." },
+        { status: 500 },
+      );
+    }
 
     const { error: uploadError } = await supabase.storage
       .from(BUCKET_NAME)
