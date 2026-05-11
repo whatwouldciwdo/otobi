@@ -26,7 +26,8 @@ export async function GET(req: Request) {
     });
     return NextResponse.json({ products });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/products GET] Error:", error);
+    return NextResponse.json({ error: "Gagal mengambil data produk" }, { status: 500 });
   }
 }
 export async function POST(req: Request) {
@@ -53,7 +54,8 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ success: true, id });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/products POST] Error:", error);
+    return NextResponse.json({ error: "Gagal membuat produk" }, { status: 500 });
   }
 }
 export async function PUT(req: Request) {
@@ -79,7 +81,8 @@ export async function PUT(req: Request) {
     });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/products PUT] Error:", error);
+    return NextResponse.json({ error: "Gagal mengupdate produk" }, { status: 500 });
   }
 }
 export async function DELETE(req: Request) {
@@ -94,6 +97,7 @@ export async function DELETE(req: Request) {
     await prisma.product.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/products DELETE] Error:", error);
+    return NextResponse.json({ error: "Gagal menghapus produk" }, { status: 500 });
   }
 }

@@ -4,13 +4,19 @@ import { checkAdmin } from "../db";
 import prisma from "../../../../lib/prisma";
 
 export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("userId");
+  if (!(await checkAdmin(userId))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
   try {
     const promos = await prisma.promo.findMany({
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json({ promos });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/promos GET] Error:", error);
+    return NextResponse.json({ error: "Gagal mengambil data promo" }, { status: 500 });
   }
 }
 
@@ -42,7 +48,8 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ success: true, id });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/promos POST] Error:", error);
+    return NextResponse.json({ error: "Gagal membuat promo" }, { status: 500 });
   }
 }
 
@@ -73,7 +80,8 @@ export async function PUT(req: Request) {
     });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/promos PUT] Error:", error);
+    return NextResponse.json({ error: "Gagal mengupdate promo" }, { status: 500 });
   }
 }
 
@@ -89,6 +97,7 @@ export async function DELETE(req: Request) {
     await prisma.promo.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/promos DELETE] Error:", error);
+    return NextResponse.json({ error: "Gagal menghapus promo" }, { status: 500 });
   }
 }

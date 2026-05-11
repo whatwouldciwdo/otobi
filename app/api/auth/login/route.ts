@@ -2,8 +2,16 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "../../../../lib/prisma";
+import { rateLimit, getClientIp } from "../../../../lib/rate-limit";
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  if (!rateLimit(`login:${ip}`, { limit: 10, windowMs: 60_000 })) {
+    return NextResponse.json(
+      { error: "Terlalu banyak percobaan login. Coba lagi dalam 1 menit." },
+      { status: 429 },
+    );
+  }
   try {
     const { email, password } = await req.json();
     if (!email || !password) {

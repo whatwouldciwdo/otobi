@@ -3,13 +3,19 @@ import { NextResponse } from "next/server";
 import { checkAdmin } from "../db";
 import prisma from "../../../../lib/prisma";
 export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const userId = searchParams.get("userId");
+  if (!(await checkAdmin(userId))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+  }
   try {
     const blogs = await prisma.blog.findMany({
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json({ blogs });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/blogs GET] Error:", error);
+    return NextResponse.json({ error: "Gagal mengambil data blog" }, { status: 500 });
   }
 }
 export async function POST(req: Request) {
@@ -46,7 +52,8 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ success: true, id });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/blogs POST] Error:", error);
+    return NextResponse.json({ error: "Gagal membuat blog" }, { status: 500 });
   }
 }
 export async function PUT(req: Request) {
@@ -83,7 +90,8 @@ export async function PUT(req: Request) {
     });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/blogs PUT] Error:", error);
+    return NextResponse.json({ error: "Gagal mengupdate blog" }, { status: 500 });
   }
 }
 export async function DELETE(req: Request) {
@@ -98,6 +106,7 @@ export async function DELETE(req: Request) {
     await prisma.blog.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/blogs DELETE] Error:", error);
+    return NextResponse.json({ error: "Gagal menghapus blog" }, { status: 500 });
   }
 }

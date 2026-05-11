@@ -2,8 +2,16 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
 import { sendWelcomeEmail } from "../../../../lib/emails";
+import { rateLimit, getClientIp } from "../../../../lib/rate-limit";
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  if (!rateLimit(`otp-verify:${ip}`, { limit: 5, windowMs: 15 * 60_000 })) {
+    return NextResponse.json(
+      { error: "Terlalu banyak percobaan. Tunggu 15 menit sebelum mencoba lagi." },
+      { status: 429 },
+    );
+  }
   try {
     const { email, code } = await req.json();
 

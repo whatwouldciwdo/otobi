@@ -2,12 +2,20 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
 import { sendVerificationEmail } from "../../../../lib/emails";
+import { rateLimit, getClientIp } from "../../../../lib/rate-limit";
 
 function generateOTP(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  if (!rateLimit(`resend-otp:${ip}`, { limit: 3, windowMs: 15 * 60_000 })) {
+    return NextResponse.json(
+      { error: "Terlalu banyak permintaan. Tunggu 15 menit sebelum mengirim ulang." },
+      { status: 429 },
+    );
+  }
   try {
     const { email } = await req.json();
     if (!email) return NextResponse.json({ error: "Email diperlukan." }, { status: 400 });

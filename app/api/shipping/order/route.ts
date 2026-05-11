@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       }),
     };
 
-    console.log("[Biteship] Creating order:", JSON.stringify(biteshipPayload));
+    console.log("[Biteship] Creating order for area:", biteshipPayload.destination_area_id);
 
     const biteshipRes = await fetch("https://api.biteship.com/v1/orders", {
       method: "POST",
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     });
 
     const biteshipData = await biteshipRes.json();
-    console.log("[Biteship] Order response:", JSON.stringify(biteshipData));
+    console.log("[Biteship] Order response status:", biteshipData?.success, "id:", biteshipData?.id);
 
     const orderId = `ord_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const biteshipOrderId = biteshipData?.id ?? null;

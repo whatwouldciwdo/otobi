@@ -25,7 +25,8 @@ export async function GET(req: Request) {
     });
     return NextResponse.json({ users });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/users GET] Error:", error);
+    return NextResponse.json({ error: "Gagal mengambil data user" }, { status: 500 });
   }
 }
 
@@ -52,7 +53,8 @@ export async function PUT(req: Request) {
     });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/users PUT] Error:", error);
+    return NextResponse.json({ error: "Gagal mengupdate user" }, { status: 500 });
   }
 }
 
@@ -76,7 +78,8 @@ export async function DELETE(req: Request) {
     await prisma.user.delete({ where: { id: targetId } });
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/users DELETE] Error:", error);
+    return NextResponse.json({ error: "Gagal menghapus user" }, { status: 500 });
   }
 }
 
@@ -114,6 +117,7 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ success: true, user: { id: newUser.id, email: newUser.email } }, { status: 201 });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Admin/users POST] Error:", error);
+    return NextResponse.json({ error: "Gagal membuat user" }, { status: 500 });
   }
 }

@@ -19,6 +19,12 @@ const BUCKET_NAME = "uploads";
 
 export async function POST(req: NextRequest) {
   try {
+    // Require a logged-in user — userId must be sent as a request header
+    const userId = req.headers.get("x-user-id");
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized. Login diperlukan untuk upload." }, { status: 401 });
+    }
+
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
 
