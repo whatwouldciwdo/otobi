@@ -7,7 +7,8 @@
     "build": "prisma generate && prisma db push && next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "node prisma/seed.cjs"
+    "seed": "node prisma/seed.cjs",
+    "backup": "node scripts/backup-db.cjs"
   },
   "prisma": {
     "seed": "node prisma/seed.cjs"

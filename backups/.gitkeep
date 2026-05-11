@@ -1,0 +1,2 @@
+# Folder ini menyimpan hasil backup database (JSON).
+# Isi backup tidak di-commit ke git (lihat .gitignore).
