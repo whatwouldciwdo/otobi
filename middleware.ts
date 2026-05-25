@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
     const userCookie = request.cookies.get("otobi-user");
 
     if (!userCookie?.value) {
-      const loginUrl = new URL("/auth/login", request.url);
+      const loginUrl = new URL("/auth", request.url);
       // Simpan halaman yang dituju agar bisa redirect kembali setelah login
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
@@ -29,7 +29,7 @@ export function middleware(request: NextRequest) {
       }
     } catch {
       // Cookie corrupt — hapus dan redirect ke login
-      const response = NextResponse.redirect(new URL("/auth/login", request.url));
+      const response = NextResponse.redirect(new URL("/auth", request.url));
       response.cookies.delete("otobi-user");
       return response;
     }
