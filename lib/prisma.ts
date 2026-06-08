@@ -4,8 +4,7 @@ import { Pool } from "pg";
 
 const shouldSkipPrismaInit =
   process.env.NEXT_PHASE === "phase-production-build" ||
-  (process.env.NODE_ENV === "production" && !process.env.DATABASE_URL) ||
-  process.env.npm_lifecycle_event === "build";
+  (process.env.NODE_ENV === "production" && !process.env.DATABASE_URL);
 
 const createPrismaPlaceholder = () =>
   new Proxy(
