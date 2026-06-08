@@ -5,6 +5,7 @@ import Image from "next/image";
 import styles from "./AdminLinks.module.css";
 import { FiPlus, FiEdit2, FiTrash2, FiLink, FiInstagram, FiUpload } from "react-icons/fi";
 import { FaTiktok, FaWhatsapp } from "react-icons/fa";
+import { useShop } from "../../context/ShopContext";
 
 interface LinkItem {
   id: string;
@@ -16,6 +17,7 @@ interface LinkItem {
 }
 
 export default function AdminLinksPage() {
+  const { user } = useShop();
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,14 +32,18 @@ export default function AdminLinksPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetchLinks();
-  }, []);
+    if (user?.id) fetchLinks();
+  }, [user?.id]);
 
   const fetchLinks = async () => {
     try {
-      const res = await fetch("/api/admin/links");
+      const res = await fetch(`/api/admin/links?userId=${user?.id}`);
       const data = await res.json();
-      setLinks(data);
+      if (Array.isArray(data)) {
+        setLinks(data);
+      } else {
+        console.error("Unexpected response:", data);
+      }
     } catch (error) {
       console.error("Error fetching links:", error);
     } finally {
@@ -107,13 +113,13 @@ export default function AdminLinksPage() {
         res = await fetch("/api/admin/links", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: editingLink.id, ...payload }),
+          body: JSON.stringify({ id: editingLink.id, userId: user?.id, ...payload }),
         });
       } else {
         res = await fetch("/api/admin/links", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...payload, order: links.length }),
+          body: JSON.stringify({ userId: user?.id, ...payload, order: links.length }),
         });
       }
 
@@ -136,7 +142,7 @@ export default function AdminLinksPage() {
     if (!confirm("Are you sure you want to delete this link?")) return;
 
     try {
-      const res = await fetch(`/api/admin/links?id=${id}`, {
+      const res = await fetch(`/api/admin/links?id=${id}&userId=${user?.id}`, {
         method: "DELETE",
       });
       if (res.ok) {
