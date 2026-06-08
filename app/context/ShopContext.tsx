@@ -179,7 +179,12 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         const userId = id ?? `guest_${Date.now()}`;
         const newUser = { id: userId, name, email, phone: phone ?? "", role: role ?? "USER", address: address ?? "", areaId: areaId ?? "", areaName: areaName ?? "" };
         setUser(newUser);
-        
+
+        // Set cookie agar middleware bisa baca session (localStorage tidak bisa dibaca server-side)
+        const cookieValue = encodeURIComponent(JSON.stringify(newUser));
+        const maxAge = 60 * 60 * 24 * 7; // 7 hari
+        document.cookie = `otobi-user=${cookieValue};path=/;max-age=${maxAge};SameSite=Lax`;
+
         if (id) {
             loadUserData(id);
         }
@@ -187,9 +192,11 @@ export function ShopProvider({ children }: { children: ReactNode }) {
 
     const logout = () => {
         setUser(null);
-        
         setCart([]);
         setWishlist([]);
+
+        // Hapus cookie session
+        document.cookie = "otobi-user=;path=/;max-age=0;SameSite=Lax";
     };
 
     const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
