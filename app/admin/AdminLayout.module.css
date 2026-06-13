@@ -170,9 +170,31 @@
 .collapseBtn {
   border: none;
   background: transparent;
-  color: #ffffff;
+  color: #5c626e;
   font-size: 1.35rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.closeBtn:hover,
+.menuBtn:hover,
+.collapseBtn:hover {
+  color: #cc0000;
+}
+
+.adminLayout[data-theme='dark'] .closeBtn,
+.adminLayout[data-theme='dark'] .menuBtn,
+.adminLayout[data-theme='dark'] .collapseBtn {
+  color: #e8eaf0;
+}
+
+.adminLayout[data-theme='dark'] .closeBtn:hover,
+.adminLayout[data-theme='dark'] .menuBtn:hover,
+.adminLayout[data-theme='dark'] .collapseBtn:hover {
+  color: #ffffff;
 }
 
 .collapseBtn {
