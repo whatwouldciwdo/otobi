@@ -65,6 +65,10 @@
   color: #7a8190;
 }
 
+.adminLayout[data-theme='dark'] .navLink.active {
+  color: #ffffff;
+}
+
 .adminLayout[data-theme='dark'] .navLink:hover {
   background: rgba(255, 255, 255, 0.04);
   color: #e8eaf0;
@@ -118,6 +122,15 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.logo img {
+  filter: invert(1) hue-rotate(180deg);
+  transition: filter 0.3s ease;
+}
+
+.adminLayout[data-theme='dark'] .logo img {
+  filter: none;
 }
 
 .logoIcon {

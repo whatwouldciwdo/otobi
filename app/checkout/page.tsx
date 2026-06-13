@@ -184,6 +184,7 @@ export default function CheckoutPage() {
         setSubmitting(true);
         setSubmitError("");
         try {
+            // Step 1: Buat order
             const res = await fetch("/api/shipping/order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -206,24 +207,48 @@ export default function CheckoutPage() {
                 }),
             });
             const data = await res.json();
-            if (data.orderId) {
-                if (user && user.id && !user.id.startsWith('guest_')) {
-                    login(
-                        user.name,
-                        user.email,
-                        user.id,
-                        form.whatsapp,
-                        user.role,
-                        form.address,
-                        selectedArea.id,
-                        selectedArea.name
-                    );
-                }
-                clearCart();
-                router.push(`/order/${data.orderId}`);
-            } else {
+
+            if (!data.orderId) {
                 setSubmitError(data.error ?? "Terjadi kesalahan. Coba lagi.");
+                return;
             }
+
+            // Update user info jika login
+            if (user && user.id && !user.id.startsWith('guest_')) {
+                login(
+                    user.name,
+                    user.email,
+                    user.id,
+                    form.whatsapp,
+                    user.role,
+                    form.address,
+                    selectedArea.id,
+                    selectedArea.name
+                );
+            }
+
+            clearCart();
+
+            // Step 2: Buat Xendit invoice & redirect ke halaman pembayaran
+            try {
+                const payRes = await fetch("/api/payments/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ orderId: data.orderId }),
+                });
+                const payData = await payRes.json();
+
+                if (payData.paymentUrl) {
+                    // Redirect ke Xendit payment page
+                    window.location.href = payData.paymentUrl;
+                    return;
+                }
+            } catch (payErr) {
+                console.error("Gagal membuat invoice pembayaran:", payErr);
+            }
+
+            // Fallback: ke halaman order jika gagal buat invoice
+            router.push(`/order/${data.orderId}`);
         } catch {
             setSubmitError("Gagal membuat pesanan. Cek koneksi internet Anda.");
         } finally {
@@ -419,7 +444,7 @@ export default function CheckoutPage() {
                             {submitError && <p className={styles.submitError}>{submitError}</p>}
                             <button type="submit" className={styles.submitBtn} disabled={submitting}>
                                 <FiPackage />
-                                {submitting ? "Membuat Pesanan..." : "Buat Pesanan"}
+                                {submitting ? "Memproses Pesanan..." : "Lanjut ke Pembayaran"}
                             </button>
                         </form>
 

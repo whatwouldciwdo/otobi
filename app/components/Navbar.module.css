@@ -71,6 +71,15 @@
     transition: color 0.25s ease;
 }
 
+.logo img {
+    transition: filter 0.35s ease;
+}
+
+.navbarLight .logo img,
+.scrolled .logo img {
+    filter: invert(1) hue-rotate(180deg);
+}
+
 .navLinks {
     display: flex;
     list-style: none;

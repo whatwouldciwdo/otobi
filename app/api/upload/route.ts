@@ -19,8 +19,21 @@ const BUCKET_NAME = "uploads";
 
 export async function POST(req: NextRequest) {
   try {
-    // Require a logged-in user — userId must be sent as a request header
-    const userId = req.headers.get("x-user-id");
+    // Require a logged-in user — userId can be sent as a header or parsed from cookie
+    let userId = req.headers.get("x-user-id");
+    
+    if (!userId) {
+      const userCookie = req.cookies.get("otobi-user")?.value;
+      if (userCookie) {
+        try {
+          const user = JSON.parse(decodeURIComponent(userCookie));
+          userId = user?.id || null;
+        } catch (e) {
+          console.error("[API /upload] Error parsing otobi-user cookie:", e);
+        }
+      }
+    }
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized. Login diperlukan untuk upload." }, { status: 401 });
     }

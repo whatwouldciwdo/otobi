@@ -373,3 +373,71 @@
         order: -1;
     }
 }
+
+/* === PAYMENT UI === */
+.paymentBanner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.paymentBanner svg {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.refreshBtn {
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.refreshBtn:hover {
+    background: #f0f0f0;
+    color: #1a1a2e;
+}
+
+.payBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background: #1a1a2e;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-family: var(--font-oswald), 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.2s;
+}
+
+.payBtn:hover:not(:disabled) {
+    background: #2a2a4a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 26, 46, 0.2);
+}
+
+.payBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}

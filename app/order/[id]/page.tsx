@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "../../components/Navbar";
-import { FiCheckCircle, FiTruck, FiPackage, FiCopy, FiArrowRight, FiAlertCircle, FiClock, FiNavigation, FiArchive, FiXCircle } from "react-icons/fi";
+import { FiCheckCircle, FiTruck, FiPackage, FiCopy, FiArrowRight, FiAlertCircle, FiClock, FiNavigation, FiArchive, FiXCircle, FiCreditCard, FiRefreshCw } from "react-icons/fi";
 import styles from "./OrderConfirmation.module.css";
 import { useShop } from "../../context/ShopContext";
 
@@ -26,19 +26,28 @@ interface OrderDetail {
     subtotal: number;
     total: number;
     createdAt: string;
+    paymentStatus: string;
+    paymentUrl: string | null;
+    paymentMethod: string | null;
+    paidAt: string | null;
+    xenditInvoiceId: string | null;
 }
 
 export default function OrderConfirmationPage() {
     const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const { logout } = useShop();
     const orderId = params.id as string;
 
     const [order, setOrder] = useState<OrderDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [copied, setCopied] = useState(false);
+    const [payLoading, setPayLoading] = useState(false);
 
-    useEffect(() => {
+    const paymentResult = searchParams.get("payment"); // "success" | "failed"
+
+    const fetchOrder = () => {
         if (!orderId) return;
         fetch(`/api/orders/${orderId}`)
             .then((r) => r.json())
@@ -47,7 +56,31 @@ export default function OrderConfirmationPage() {
                 setLoading(false);
             })
             .catch(() => setLoading(false));
+    };
+
+    useEffect(() => {
+        fetchOrder();
     }, [orderId]);
+
+    const handlePay = async () => {
+        if (!order) return;
+        setPayLoading(true);
+        try {
+            const res = await fetch("/api/payments/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId: order.id }),
+            });
+            const data = await res.json();
+            if (data.paymentUrl) {
+                window.location.href = data.paymentUrl;
+            }
+        } catch (err) {
+            console.error("Gagal membuka halaman pembayaran:", err);
+        } finally {
+            setPayLoading(false);
+        }
+    };
 
     const copyWaybill = () => {
         if (!order?.biteshipWaybillId) return;
@@ -97,25 +130,106 @@ export default function OrderConfirmationPage() {
 
     const items = JSON.parse(order.itemsJson ?? "[]");
 
+    const paymentStatusConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
+        PENDING: { label: "Menunggu Pembayaran", color: "#7a5100", bg: "#fffbea", border: "#ffe58a" },
+        PAID:    { label: "Lunas ✓",             color: "#1a7a3a", bg: "#f0fff4", border: "#b2e8c4" },
+        EXPIRED: { label: "Kadaluarsa",           color: "#cc0000", bg: "#fff0f0", border: "#ffcccc" },
+        FAILED:  { label: "Gagal",                color: "#cc0000", bg: "#fff0f0", border: "#ffcccc" },
+    };
+
+    const isPaid = order.paymentStatus === "PAID";
+    const isPending = order.paymentStatus === "PENDING";
+
     return (
         <div className="page-wrapper">
             <Navbar />
             <main className={styles.main}>
                 <div className={styles.container}>
+                    {/* Payment Result Banner */}
+                    {paymentResult === "success" && (
+                        <div className={styles.paymentBanner} style={{ background: "#f0fff4", border: "1px solid #b2e8c4", color: "#1a7a3a" }}>
+                            <FiCheckCircle /> Pembayaran berhasil! Terima kasih sudah berbelanja di OTOBI.
+                        </div>
+                    )}
+                    {paymentResult === "failed" && (
+                        <div className={styles.paymentBanner} style={{ background: "#fff0f0", border: "1px solid #ffcccc", color: "#cc0000" }}>
+                            <FiXCircle /> Pembayaran gagal atau dibatalkan. Silakan coba lagi.
+                        </div>
+                    )}
+
                     {/* Header */}
                     <div className={styles.successHeader}>
-                        <div className={styles.checkIcon}>
-                            <FiCheckCircle />
+                        <div className={styles.checkIcon} style={isPaid ? { background: "#f0fff4", color: "#1a7a3a" } : {}}>
+                            {isPaid ? <FiCheckCircle /> : <FiClock />}
                         </div>
-                        <h1 className={styles.successTitle}>Pesanan Berhasil Dibuat!</h1>
+                        <h1 className={styles.successTitle}>
+                            {isPaid ? "Pembayaran Berhasil!" : "Pesanan Berhasil Dibuat!"}
+                        </h1>
                         <p className={styles.successSub}>
-                            Terima kasih telah berbelanja di OTOBI. Detail pesanan dikirim ke <strong>{order.recipientEmail}</strong>
+                            {isPaid
+                                ? <>Pesanan kamu sedang diproses. Nomor resi akan dikirim ke <strong>{order.recipientEmail}</strong></>
+                                : <>Selesaikan pembayaran untuk memproses pesananmu. Konfirmasi ke <strong>{order.recipientEmail}</strong></>}
                         </p>
                     </div>
 
                     <div className={styles.layout}>
                         {/* Left: Order Details */}
                         <div className={styles.detailsSection}>
+                            {/* Payment Status Card */}
+                            <div className={styles.card}>
+                                <div className={styles.cardHeader}>
+                                    <FiCreditCard className={styles.cardIcon} />
+                                    <h2 className={styles.cardTitle}>Status Pembayaran</h2>
+                                    <button
+                                        onClick={fetchOrder}
+                                        className={styles.refreshBtn}
+                                        title="Refresh status"
+                                    >
+                                        <FiRefreshCw size={14} />
+                                    </button>
+                                </div>
+                                <div className={styles.infoRow}>
+                                    <span className={styles.infoLabel}>Status</span>
+                                    {(() => {
+                                        const cfg = paymentStatusConfig[order.paymentStatus] ?? paymentStatusConfig["PENDING"];
+                                        return (
+                                            <span
+                                                className={styles.statusBadge}
+                                                style={{ color: cfg.color, background: cfg.bg, border: `1px solid ${cfg.border}` }}
+                                            >
+                                                {cfg.label}
+                                            </span>
+                                        );
+                                    })()}
+                                </div>
+                                {order.paymentMethod && (
+                                    <div className={styles.infoRow}>
+                                        <span className={styles.infoLabel}>Metode</span>
+                                        <span className={styles.infoValue}>{order.paymentMethod}</span>
+                                    </div>
+                                )}
+                                {order.paidAt && (
+                                    <div className={styles.infoRow}>
+                                        <span className={styles.infoLabel}>Waktu Bayar</span>
+                                        <span className={styles.infoValue}>
+                                            {new Date(order.paidAt).toLocaleString("id-ID", {
+                                                dateStyle: "medium",
+                                                timeStyle: "short",
+                                            })}
+                                        </span>
+                                    </div>
+                                )}
+                                {isPending && (
+                                    <button
+                                        onClick={handlePay}
+                                        disabled={payLoading}
+                                        className={styles.payBtn}
+                                    >
+                                        <FiCreditCard />
+                                        {payLoading ? "Membuka halaman pembayaran..." : "Bayar Sekarang"}
+                                    </button>
+                                )}
+                            </div>
                             {/* Resi / AWB */}
                             <div className={styles.card}>
                                 <div className={styles.cardHeader}>

@@ -82,6 +82,7 @@ export default function AdminLinksPage() {
     try {
       const res = await fetch("/api/upload", {
         method: "POST",
+        headers: user?.id ? { "x-user-id": user.id } : undefined,
         body: formData,
       });
       const data = await res.json();

@@ -121,6 +121,12 @@ model Order {
   itemsJson           String   @db.Text
   subtotal            Int
   total               Int
+  // Xendit Payment
+  xenditInvoiceId     String?  @unique
+  paymentUrl          String?  @db.Text
+  paymentStatus       String   @default("PENDING")  // PENDING | PAID | EXPIRED | FAILED
+  paymentMethod       String?  // VA_BNI, OVO, GOPAY, etc
+  paidAt              DateTime?
   // User reference (optional — guest orders allowed)
   userId              String?
   createdAt           DateTime @default(now())
