@@ -2,6 +2,19 @@
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
+  --bg-card: #ffffff;
+  --bg-hover: #f9fafb;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --text-main: #101312;
+  --text-muted: #5c626e;
+}
+
+:global([data-theme='dark']) .container {
+  --bg-card: #1d201f;
+  --bg-hover: #262a28;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-main: #e8eaf0;
+  --text-muted: #7a8190;
 }
 
 .header {
@@ -165,8 +178,8 @@
   width: 100%;
   padding: 12px;
   border: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
-  background: #ffffff;
-  color: #101312;
+  background: var(--bg-card);
+  color: var(--text-main);
   border-radius: 8px;
   font-family: inherit;
   font-size: 0.95rem;
