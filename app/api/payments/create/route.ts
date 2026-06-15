@@ -1,9 +1,10 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import Xendit from "xendit-node";
+import { Xendit } from "xendit-node";
 
-const xendit = new Xendit({ secretKey: process.env.XENDIT_SECRET_KEY! });
+const xenditClient = new Xendit({ secretKey: process.env.XENDIT_SECRET_KEY! });
+const { Invoice } = xenditClient;
 
 // POST /api/payments/create
 // Body: { orderId }
@@ -29,8 +30,7 @@ export async function POST(req: Request) {
     const expiryDate = new Date();
     expiryDate.setHours(expiryDate.getHours() + 24); // Expire 24 jam
 
-    // @ts-ignore — xendit-node Invoice API
-    const invoice = await xendit.Invoice.createInvoice({
+    const invoice = await Invoice.createInvoice({
       data: {
         externalId: orderId,
         amount: order.total,
