@@ -115,8 +115,8 @@ export async function POST(req: Request) {
             };
           }
         } else {
-          // Kurir reguler (JNE/J&T/ID Express): mode drop_off
-          basePayload.origin_collection_method = process.env.BITESHIP_COLLECTION_METHOD ?? "drop_off";
+          // Kurir reguler (JNE/J&T/ID Express): default ke pickup agar order berhasil dibuat di Biteship
+          basePayload.origin_collection_method = process.env.BITESHIP_COLLECTION_METHOD ?? "pickup";
         }
 
         console.log("[Biteship] Creating order after payment confirmed:", external_id, "| instant:", isInstant);
