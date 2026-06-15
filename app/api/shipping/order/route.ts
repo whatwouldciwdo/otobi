@@ -23,65 +23,18 @@ export async function POST(req: Request) {
       userId,
     } = await req.json();
 
-    const biteshipPayload = {
-      origin_contact_name: process.env.STORE_NAME ?? "OTOBI Store",
-      origin_contact_phone: process.env.STORE_PHONE ?? "08111234567",
-      origin_address:
-        process.env.STORE_ADDRESS ?? "Jl. Taman Sari No. 1, Jakarta Barat",
-      origin_area_id:
-        process.env.BITESHIP_ORIGIN_AREA_ID ?? "IDNP6IDNC146IDND826IDZ11110",
-      destination_contact_name: recipientName,
-      destination_contact_phone: recipientPhone,
-      destination_contact_email: recipientEmail,
-      destination_address: recipientAddress,
-      destination_area_id: destinationAreaId,
-      courier_company: courierCompany,
-      courier_type: courierServiceCode,
-      delivery_type: "now",
-      items: items.map((item: any) => {
-        const digits = String(item.price ?? "0").replace(/[^\d]/g, "");
-        const value = parseInt(digits, 10) || 10000;
-        const normalizedValue = value < 1000 ? value * 1000 : value;
-        return {
-          name: item.title ?? "Produk OTOBI",
-          description: item.title ?? "Produk",
-          value: normalizedValue,
-          length: 15,
-          width: 10,
-          height: 10,
-          weight: item.weight ?? 300,
-          quantity: item.quantity ?? 1,
-        };
-      }),
-    };
-
-    console.log("[Biteship] Creating order for area:", biteshipPayload.destination_area_id);
-
-    const biteshipRes = await fetch("https://api.biteship.com/v1/orders", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.BITESHIP_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(biteshipPayload),
-    });
-
-    const biteshipData = await biteshipRes.json();
-    console.log("[Biteship] Order response status:", biteshipData?.success, "id:", biteshipData?.id);
-
+    // Buat order di DB dulu — Biteship order akan dibuat setelah pembayaran dikonfirmasi
     const orderId = `ord_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const biteshipOrderId = biteshipData?.id ?? null;
-    const biteshipWaybillId = biteshipData?.courier_waybill_id ?? null;
-    const biteshipStatus = biteshipData?.status ?? "pending";
 
     await prisma.order.create({
       data: {
         id: orderId,
-        biteshipOrderId,
-        biteshipWaybillId,
-        biteshipStatus,
+        biteshipOrderId: null,
+        biteshipWaybillId: null,
+        biteshipStatus: "waiting_payment",
         courierCompany,
         courierServiceName,
+        courierServiceCode,
         shippingCost,
         recipientName,
         recipientPhone,
@@ -131,26 +84,10 @@ export async function POST(req: Request) {
       createdAt: new Date(),
     }).catch((err) => console.error("[Email] Order receipt failed:", err.message));
 
-    if (!biteshipData?.success && !biteshipData?.id) {
-      return NextResponse.json({
-        orderId,
-        biteshipError: biteshipData?.error ?? "Biteship order creation failed",
-        waybillId: null,
-        status: "pending",
-        message:
-          "Order tersimpan, namun pembuatan resi Biteship gagal. Kami akan memproses manual.",
-      });
-    }
-
     return NextResponse.json({
       orderId,
-      biteshipOrderId: biteshipOrderId,
-      waybillId: biteshipWaybillId,
-      status: biteshipStatus,
-      courierTrackingUrl: biteshipData?.courier_tracking_id
-        ? `https://biteship.com/track/${biteshipData.courier_tracking_id}`
-        : null,
-      message: "Order berhasil dibuat!",
+      status: "waiting_payment",
+      message: "Order berhasil dibuat! Silakan lanjutkan pembayaran.",
     });
   } catch (error: any) {
     console.error("[API /shipping/order] Error:", error.message);

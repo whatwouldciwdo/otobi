@@ -1,7 +1,6 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import crypto from "crypto";
 
 // POST /api/payments/webhook
 // Xendit akan POST ke sini ketika status invoice berubah
@@ -51,6 +50,7 @@ export async function POST(req: Request) {
       ? "FAILED"
       : "PENDING";
 
+    // Update status pembayaran di DB
     await prisma.order.update({
       where: { id: external_id },
       data: {
@@ -62,6 +62,72 @@ export async function POST(req: Request) {
     });
 
     console.log(`[Xendit Webhook] Order ${external_id} updated to ${paymentStatus}`);
+
+    // Jika PAID, buat order di Biteship
+    if (status === "PAID" && !order.biteshipOrderId) {
+      try {
+        const items = JSON.parse(order.itemsJson ?? "[]");
+        const biteshipPayload = {
+          origin_contact_name: process.env.STORE_NAME ?? "OTOBI Store",
+          origin_contact_phone: process.env.STORE_PHONE ?? "08111234567",
+          origin_address: process.env.STORE_ADDRESS ?? "Jl. Taman Sari No. 1, Jakarta Barat",
+          origin_area_id: process.env.BITESHIP_ORIGIN_AREA_ID ?? "IDNP6IDNC146IDND826IDZ11110",
+          destination_contact_name: order.recipientName,
+          destination_contact_phone: order.recipientPhone,
+          destination_contact_email: order.recipientEmail,
+          destination_address: order.recipientAddress,
+          destination_area_id: order.recipientAreaId,
+          courier_company: order.courierCompany,
+          courier_type: order.courierServiceCode,
+          delivery_type: "now",
+          items: items.map((item: any) => {
+            const digits = String(item.price ?? "0").replace(/[^\d]/g, "");
+            const value = parseInt(digits, 10) || 10000;
+            const normalizedValue = value < 1000 ? value * 1000 : value;
+            return {
+              name: item.title ?? "Produk OTOBI",
+              description: item.title ?? "Produk",
+              value: normalizedValue,
+              length: item.length ?? 15,
+              width: item.width ?? 10,
+              height: item.height ?? 10,
+              weight: item.weight ?? 300,
+              quantity: item.quantity ?? 1,
+            };
+          }),
+        };
+
+        console.log("[Biteship] Creating order after payment confirmed:", external_id);
+        const biteshipRes = await fetch("https://api.biteship.com/v1/orders", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.BITESHIP_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(biteshipPayload),
+        });
+
+        const biteshipData = await biteshipRes.json();
+        console.log("[Biteship] Order created:", biteshipData?.id, "status:", biteshipData?.status);
+
+        if (biteshipData?.id) {
+          await prisma.order.update({
+            where: { id: external_id },
+            data: {
+              biteshipOrderId: biteshipData.id,
+              biteshipWaybillId: biteshipData.courier_waybill_id ?? null,
+              biteshipStatus: biteshipData.status ?? "confirmed",
+            },
+          });
+        } else {
+          console.warn("[Biteship] Failed to create order:", biteshipData?.error ?? biteshipData);
+        }
+      } catch (biteshipErr: any) {
+        // Jangan gagalkan webhook karena error Biteship — payment sudah dikonfirmasi
+        console.error("[Biteship] Error creating order:", biteshipErr?.message);
+      }
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("[Xendit Webhook] Error:", error?.message);

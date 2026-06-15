@@ -105,8 +105,9 @@ model Order {
   // Biteship order info
   biteshipOrderId     String?  @unique
   biteshipWaybillId   String?  // AWB / nomor resi
-  biteshipStatus      String?  @default("confirmed")
+  biteshipStatus      String?  @default("waiting_payment")
   courierCompany      String
+  courierServiceCode  String   @default("")
   courierServiceName  String
   shippingCost        Int
   // Recipient info
