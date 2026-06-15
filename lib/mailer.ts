@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 
 // Menggunakan IP langsung untuk menghindari DNS resolution error (getaddrinfo EBUSY)
 // di Netlify/AWS environment. IP dari server Rumahweb: mail.arxenovasocial.com
-const SMTP_HOST = process.env.SMTP_HOST ?? "202.10.43.170";
+const SMTP_HOST = process.env.SMTP_HOST!;
 const SMTP_PORT = 465;
 const SMTP_PASS = process.env.SMTP_PASSWORD!;
 
