@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     const payload = {
       origin_area_id: originAreaId,
       destination_area_id: destinationAreaId,
-      couriers: "jne,jnt,sicepat",
+      couriers: "jne,jnt,idexpress,sicepat",
       items: biteshipItems,
     };
     console.log("[Biteship] Sending rates request:", JSON.stringify(payload));

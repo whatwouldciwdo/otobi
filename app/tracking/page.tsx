@@ -9,6 +9,7 @@ import styles from "./Tracking.module.css";
 const COURIERS = [
     { value: "jne", label: "JNE" },
     { value: "jnt", label: "J&T Express" },
+    { value: "idexpress", label: "ID Express" },
     { value: "sicepat", label: "SiCepat" },
     { value: "pos", label: "Pos Indonesia" },
     { value: "anteraja", label: "AnterAja" },
