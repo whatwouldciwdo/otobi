@@ -80,6 +80,7 @@ export async function POST(req: Request) {
           courier_company: order.courierCompany,
           courier_type: order.courierServiceCode,
           delivery_type: "now",
+          origin_collection_method: process.env.BITESHIP_COLLECTION_METHOD ?? "drop_off",
           items: items.map((item: any) => {
             const digits = String(item.price ?? "0").replace(/[^\d]/g, "");
             const value = parseInt(digits, 10) || 10000;
