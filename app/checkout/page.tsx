@@ -25,6 +25,38 @@ interface ShippingRate {
     is_instant?: boolean;
 }
 
+const renderCourierLogo = (courierCode: string) => {
+    const code = courierCode.toLowerCase();
+    let label = courierCode.toUpperCase();
+    let logoClass = styles.logoDefault;
+
+    if (code === "gojek") {
+        label = "Gojek";
+        logoClass = styles.logoGojek;
+    } else if (code === "grab") {
+        label = "Grab";
+        logoClass = styles.logoGrab;
+    } else if (code === "paxel") {
+        label = "Paxel";
+        logoClass = styles.logoPaxel;
+    } else if (code === "jne") {
+        label = "JNE";
+        logoClass = styles.logoJne;
+    } else if (code === "jnt") {
+        label = "J&T";
+        logoClass = styles.logoJnt;
+    } else if (code === "idexpress") {
+        label = "ID Express";
+        logoClass = styles.logoIdexpress;
+    }
+
+    return (
+        <div className={`${styles.courierLogo} ${logoClass}`}>
+            {label}
+        </div>
+    );
+};
+
 export default function CheckoutPage() {
     const router = useRouter();
     const { cart, cartTotal, user, login, clearCart } = useShop();
@@ -459,12 +491,27 @@ export default function CheckoutPage() {
                                     </div>
                                     {selectedArea && (
                                         <div className={styles.selectedArea}>
-                                            <FiCheckCircle className={styles.selectedAreaIcon} />
-                                            <span>
-                                                <strong>{selectedArea.name.split(",").slice(0, 2).join(",")}</strong>
-                                                {" — "}
-                                                <span className={styles.postalCode}>Kode Pos {selectedArea.postal_code}</span>
-                                            </span>
+                                            <div className={styles.selectedAreaInfo}>
+                                                <FiMapPin className={styles.selectedAreaIcon} />
+                                                <div className={styles.selectedAreaText}>
+                                                    <span className={styles.selectedAreaName}>
+                                                        {selectedArea.name.split(",").slice(0, 2).join(", ")}
+                                                    </span>
+                                                    {selectedArea.postal_code ? (
+                                                        <span className={styles.postalCode}>Kode Pos: {selectedArea.postal_code}</span>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className={styles.changeAreaBtn}
+                                                onClick={() => {
+                                                    setSelectedArea(null);
+                                                    setAreaInput("");
+                                                }}
+                                            >
+                                                Ubah Lokasi
+                                            </button>
                                         </div>
                                     )}
                                 </div>
@@ -501,9 +548,7 @@ export default function CheckoutPage() {
                                                     onChange={() => setSelectedRate(rate)}
                                                     checked={selectedRate?.courier_service_code === rate.courier_service_code && selectedRate?.courier_code === rate.courier_code}
                                                 />
-                                                <div className={`${styles.rateBadge} ${rate.is_instant ? styles.rateBadgeInstant : ""}`}>
-                                                    {rate.courier_code.toUpperCase()}
-                                                </div>
+                                                {renderCourierLogo(rate.courier_code)}
                                                 <div className={styles.rateInfo}>
                                                     <span className={styles.rateService}>
                                                         {rate.courier_service_name}
@@ -542,7 +587,10 @@ export default function CheckoutPage() {
                                     </div>
                                 )}
                                 {instantChecked && (
-                                    <p className={styles.instantOk}>✅ Lokasi GPS terdeteksi. Ongkir instan sudah ditampilkan di atas.</p>
+                                    <div className={styles.instantOk}>
+                                        <span className={styles.pulseDot} />
+                                        <span>Koordinat GPS Aktif (Ongkir instan tersedia)</span>
+                                    </div>
                                 )}
                             </div>
 

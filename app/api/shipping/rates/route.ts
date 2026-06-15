@@ -41,11 +41,11 @@ export async function POST(req: Request) {
       "Content-Type": "application/json",
     };
 
-    // ─── 1. Cek ongkir kurir REGULER (JNE, J&T, ID Express, SiCepat) ───
+    // ─── 1. Cek ongkir kurir REGULER (JNE, J&T, ID Express) ───
     const regularPayload = {
       origin_area_id: originAreaId,
       destination_area_id: destinationAreaId,
-      couriers: "jne,jnt,idexpress,sicepat",
+      couriers: "jne,jnt,idexpress",
       items: biteshipItems,
     };
     console.log("[Biteship] Sending regular rates request:", JSON.stringify(regularPayload));

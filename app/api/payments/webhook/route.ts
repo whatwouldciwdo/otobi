@@ -115,7 +115,7 @@ export async function POST(req: Request) {
             };
           }
         } else {
-          // Kurir reguler (JNE/J&T/ID Express/SiCepat): mode drop_off
+          // Kurir reguler (JNE/J&T/ID Express): mode drop_off
           basePayload.origin_collection_method = process.env.BITESHIP_COLLECTION_METHOD ?? "drop_off";
         }
 

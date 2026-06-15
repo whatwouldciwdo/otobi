@@ -222,27 +222,65 @@
     margin-top: 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 16px;
     font-family: var(--font-inter), 'Inter', sans-serif;
     font-size: 14px;
-    font-weight: 500;
-    color: #1a7a3a;
-    background: rgba(232, 253, 240, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid #b2e8c4;
-    border-radius: 14px;
-    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    padding: 14px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.selectedAreaInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
 }
 
 .selectedAreaIcon {
-    font-size: 20px;
-    color: #1a7a3a;
+    font-size: 18px;
+    color: #cda34f;
     flex-shrink: 0;
 }
 
+.selectedAreaText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.selectedAreaName {
+    font-weight: 600;
+    color: #111;
+}
+
 .postalCode {
-    color: #68d391;
+    color: #666;
+    font-size: 12px;
     font-weight: 400;
+}
+
+.changeAreaBtn {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #111;
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.changeAreaBtn:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
 }
 
 .hintText {
@@ -738,16 +776,91 @@
 .instantOk {
     font-family: var(--font-inter), 'Inter', sans-serif;
     font-size: 13px;
-    font-weight: 500;
-    color: #1a7a3a;
-    background: rgba(232, 253, 240, 0.6);
-    border: 1px solid #b2e8c4;
+    font-weight: 600;
+    color: #a88135;
+    background: rgba(205, 163, 79, 0.05);
+    border: 1px solid rgba(205, 163, 79, 0.2);
     border-radius: 12px;
     padding: 10px 16px;
     margin-top: 16px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     width: 100%;
     box-sizing: border-box;
+}
+
+.pulseDot {
+    width: 8px;
+    height: 8px;
+    background-color: #cda34f;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(205, 163, 79, 0.4);
+    animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(205, 163, 79, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(205, 163, 79, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(205, 163, 79, 0);
+    }
+}
+
+.courierLogo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-inter), 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: #ffffff;
+    min-width: 80px;
+    text-align: center;
+    height: 28px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.logoDefault {
+    background-color: #111;
+}
+
+.logoGojek {
+    background-color: #00aa13;
+}
+
+.logoGrab {
+    background-color: #00b14f;
+}
+
+.logoPaxel {
+    background-color: #59258c;
+}
+
+.logoJne {
+    background: linear-gradient(135deg, #0a3a8a 0%, #1e5fcb 100%);
+}
+
+.logoJnt {
+    background-color: #e00010;
+}
+
+.logoIdexpress {
+    background-color: #f37021;
 }
 
 @media (max-width: 900px) {
