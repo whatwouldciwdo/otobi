@@ -22,6 +22,7 @@ interface ShippingRate {
     price: number;
     shipment_duration_range: string;
     shipment_duration_unit: string;
+    is_instant?: boolean;
 }
 
 export default function CheckoutPage() {
@@ -48,6 +49,13 @@ export default function CheckoutPage() {
     const [ratesError, setRatesError] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState("");
+
+    // GPS / Instant courier state
+    const [destLat, setDestLat] = useState<number | null>(null);
+    const [destLng, setDestLng] = useState<number | null>(null);
+    const [loadingInstant, setLoadingInstant] = useState(false);
+    const [instantError, setInstantError] = useState("");
+    const [instantChecked, setInstantChecked] = useState(false);
 
     // Voucher state
     const [voucherCode, setVoucherCode] = useState("");
@@ -107,7 +115,12 @@ export default function CheckoutPage() {
             const res = await fetch("/api/shipping/rates", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ destinationAreaId: area.id, items }),
+                body: JSON.stringify({
+                    destinationAreaId: area.id,
+                    items,
+                    destinationLatitude: destLat,
+                    destinationLongitude: destLng,
+                }),
             });
             const data = await res.json();
             if (data.rates?.length > 0) {
@@ -130,8 +143,69 @@ export default function CheckoutPage() {
         setSelectedArea(area);
         setAreaInput(area.name);
         setAreaResults([]);
+        setInstantChecked(false);
+        setInstantError("");
         fetchRates(area);
     };
+
+    const handleCheckInstant = useCallback(() => {
+        if (!selectedArea) return;
+        setLoadingInstant(true);
+        setInstantError("");
+        if (!navigator.geolocation) {
+            setInstantError("Browser Anda tidak mendukung GPS. Coba browser lain.");
+            setLoadingInstant(false);
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                setDestLat(lat);
+                setDestLng(lng);
+                setInstantChecked(true);
+                setLoadingInstant(false);
+                // Fetch ulang rates dengan koordinat baru (gabungan reguler + instant)
+                const items = cart.map((item) => {
+                    const digits = item.price.replace(/[^\d]/g, "");
+                    const value = parseInt(digits, 10) || 10000;
+                    const normalizedValue = value < 1000 ? value * 1000 : value;
+                    return { name: item.title, value: normalizedValue, quantity: item.quantity, weight: 300 };
+                });
+                setLoadingRates(true);
+                setRatesError("");
+                fetch("/api/shipping/rates", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        destinationAreaId: selectedArea.id,
+                        items,
+                        destinationLatitude: lat,
+                        destinationLongitude: lng,
+                    }),
+                })
+                    .then((r) => r.json())
+                    .then((data) => {
+                        if (data.rates?.length > 0) {
+                            setRates(data.rates);
+                        } else {
+                            setInstantError("Kurir instan tidak tersedia di lokasi Anda.");
+                        }
+                    })
+                    .catch(() => setInstantError("Gagal mengambil ongkir instan."))
+                    .finally(() => setLoadingRates(false));
+            },
+            (err) => {
+                setLoadingInstant(false);
+                if (err.code === 1) {
+                    setInstantError("Izin lokasi ditolak. Aktifkan izin lokasi di browser Anda, lalu coba lagi.");
+                } else {
+                    setInstantError("Gagal mendapatkan lokasi. Coba lagi.");
+                }
+            },
+            { timeout: 10000 }
+        );
+    }, [selectedArea, cart]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -196,6 +270,8 @@ export default function CheckoutPage() {
                     destinationAreaId: selectedArea.id,
                     destinationAreaName: selectedArea.name,
                     destinationPostalCode: String(selectedArea.postal_code ?? ""),
+                    destinationLat: destLat,
+                    destinationLng: destLng,
                     courierCompany: selectedRate.courier_code,
                     courierServiceCode: selectedRate.courier_service_code,
                     courierServiceName: selectedRate.courier_service_name,
@@ -416,7 +492,7 @@ export default function CheckoutPage() {
                                         {rates.map((rate, i) => (
                                             <label
                                                 key={i}
-                                                className={`${styles.rateOption} ${selectedRate?.courier_service_code === rate.courier_service_code && selectedRate?.courier_code === rate.courier_code ? styles.rateSelected : ""}`}
+                                                className={`${styles.rateOption} ${selectedRate?.courier_service_code === rate.courier_service_code && selectedRate?.courier_code === rate.courier_code ? styles.rateSelected : ""} ${rate.is_instant ? styles.rateInstant : ""}`}
                                             >
                                                 <input
                                                     type="radio"
@@ -425,11 +501,14 @@ export default function CheckoutPage() {
                                                     onChange={() => setSelectedRate(rate)}
                                                     checked={selectedRate?.courier_service_code === rate.courier_service_code && selectedRate?.courier_code === rate.courier_code}
                                                 />
-                                                <div className={styles.rateBadge}>
+                                                <div className={`${styles.rateBadge} ${rate.is_instant ? styles.rateBadgeInstant : ""}`}>
                                                     {rate.courier_code.toUpperCase()}
                                                 </div>
                                                 <div className={styles.rateInfo}>
-                                                    <span className={styles.rateService}>{rate.courier_service_name}</span>
+                                                    <span className={styles.rateService}>
+                                                        {rate.courier_service_name}
+                                                        {rate.is_instant && <span className={styles.instantBadge}>⚡ Instan</span>}
+                                                    </span>
                                                     <span className={styles.rateDuration}>
                                                         Estimasi {rate.shipment_duration_range} {rate.shipment_duration_unit}
                                                     </span>
@@ -438,6 +517,32 @@ export default function CheckoutPage() {
                                             </label>
                                         ))}
                                     </div>
+                                )}
+
+                                {/* Tombol Cek Ongkir Instan */}
+                                {selectedArea && !instantChecked && (
+                                    <div className={styles.instantSection}>
+                                        <div className={styles.instantDivider}>
+                                            <span>atau</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className={styles.instantBtn}
+                                            onClick={handleCheckInstant}
+                                            disabled={loadingInstant}
+                                        >
+                                            {loadingInstant ? (
+                                                <><span className={styles.spinner} /> Mendapatkan lokasi...</>
+                                            ) : (
+                                                <>⚡ Cek Ongkir Instan (Gojek / Grab / Paxel)</>
+                                            )}
+                                        </button>
+                                        <p className={styles.instantHint}>Browser akan meminta izin lokasi GPS Anda untuk menghitung ongkir instan.</p>
+                                        {instantError && <p className={styles.ratesError}>{instantError}</p>}
+                                    </div>
+                                )}
+                                {instantChecked && (
+                                    <p className={styles.instantOk}>✅ Lokasi GPS terdeteksi. Ongkir instan sudah ditampilkan di atas.</p>
                                 )}
                             </div>
 

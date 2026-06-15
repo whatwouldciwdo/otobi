@@ -66,12 +66,33 @@ export async function POST(req: Request) {
     // Jika PAID, buat order di Biteship
     if (status === "PAID" && !order.biteshipOrderId) {
       try {
+        const INSTANT_COURIERS = ["gojek", "grab", "paxel"];
+        const isInstant = INSTANT_COURIERS.includes(order.courierCompany?.toLowerCase() ?? "");
+        const ORIGIN_LAT = parseFloat(process.env.STORE_LAT ?? "-6.1719");
+        const ORIGIN_LNG = parseFloat(process.env.STORE_LNG ?? "106.7357");
+
         const items = JSON.parse(order.itemsJson ?? "[]");
-        const biteshipPayload = {
+        const mappedItems = items.map((item: any) => {
+          const digits = String(item.price ?? "0").replace(/[^\d]/g, "");
+          const value = parseInt(digits, 10) || 10000;
+          const normalizedValue = value < 1000 ? value * 1000 : value;
+          return {
+            name: item.title ?? "Produk OTOBI",
+            description: item.title ?? "Produk",
+            value: normalizedValue,
+            length: item.length ?? 15,
+            width: item.width ?? 10,
+            height: item.height ?? 10,
+            weight: item.weight ?? 300,
+            quantity: item.quantity ?? 1,
+          };
+        });
+
+        const basePayload: any = {
           origin_contact_name: process.env.STORE_NAME ?? "OTOBI Store",
           origin_contact_phone: process.env.STORE_PHONE ?? "08111234567",
           origin_address: process.env.STORE_ADDRESS ?? "Jl. Taman Sari No. 1, Jakarta Barat",
-          origin_area_id: process.env.BITESHIP_ORIGIN_AREA_ID ?? "IDNP6IDNC146IDND826IDZ11110",
+          origin_area_id: process.env.BITESHIP_ORIGIN_AREA_ID ?? "IDNP6IDNC146IDND824IDZ11610",
           destination_contact_name: order.recipientName,
           destination_contact_phone: order.recipientPhone,
           destination_contact_email: order.recipientEmail,
@@ -80,32 +101,32 @@ export async function POST(req: Request) {
           courier_company: order.courierCompany,
           courier_type: order.courierServiceCode,
           delivery_type: "now",
-          origin_collection_method: process.env.BITESHIP_COLLECTION_METHOD ?? "drop_off",
-          items: items.map((item: any) => {
-            const digits = String(item.price ?? "0").replace(/[^\d]/g, "");
-            const value = parseInt(digits, 10) || 10000;
-            const normalizedValue = value < 1000 ? value * 1000 : value;
-            return {
-              name: item.title ?? "Produk OTOBI",
-              description: item.title ?? "Produk",
-              value: normalizedValue,
-              length: item.length ?? 15,
-              width: item.width ?? 10,
-              height: item.height ?? 10,
-              weight: item.weight ?? 300,
-              quantity: item.quantity ?? 1,
-            };
-          }),
+          items: mappedItems,
         };
 
-        console.log("[Biteship] Creating order after payment confirmed:", external_id);
+        if (isInstant) {
+          // Kurir instant (Gojek/Grab/Paxel): mode pickup + koordinat GPS
+          basePayload.origin_collection_method = "pickup";
+          basePayload.origin_coordinate = { latitude: ORIGIN_LAT, longitude: ORIGIN_LNG };
+          if ((order as any).destinationLat && (order as any).destinationLng) {
+            basePayload.destination_coordinate = {
+              latitude: (order as any).destinationLat,
+              longitude: (order as any).destinationLng,
+            };
+          }
+        } else {
+          // Kurir reguler (JNE/J&T/ID Express/SiCepat): mode drop_off
+          basePayload.origin_collection_method = process.env.BITESHIP_COLLECTION_METHOD ?? "drop_off";
+        }
+
+        console.log("[Biteship] Creating order after payment confirmed:", external_id, "| instant:", isInstant);
         const biteshipRes = await fetch("https://api.biteship.com/v1/orders", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${process.env.BITESHIP_API_KEY}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(biteshipPayload),
+          body: JSON.stringify(basePayload),
         });
 
         const biteshipData = await biteshipRes.json();

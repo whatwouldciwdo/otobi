@@ -118,6 +118,8 @@ model Order {
   recipientAreaId     String
   recipientAreaName   String
   recipientPostalCode String?
+  destinationLat      Float?   // koordinat GPS tujuan (untuk kurir instant: Gojek/Grab/Paxel)
+  destinationLng      Float?
   // Order items (JSON string)
   itemsJson           String   @db.Text
   subtotal            Int
