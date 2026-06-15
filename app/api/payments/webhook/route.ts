@@ -67,7 +67,12 @@ export async function POST(req: Request) {
     if (status === "PAID" && !order.biteshipOrderId) {
       try {
         const INSTANT_COURIERS = ["gojek", "grab", "paxel"];
-        const isInstant = INSTANT_COURIERS.includes(order.courierCompany?.toLowerCase() ?? "");
+        const PICKUP_ONLY_COURIERS = ["gojek", "grab", "paxel", "jne"];
+
+        const courier = order.courierCompany?.toLowerCase() ?? "";
+        const isInstant = INSTANT_COURIERS.includes(courier);
+        const isPickupOnly = PICKUP_ONLY_COURIERS.includes(courier);
+
         const ORIGIN_LAT = parseFloat(process.env.STORE_LAT ?? "-6.1719");
         const ORIGIN_LNG = parseFloat(process.env.STORE_LNG ?? "106.7357");
 
@@ -115,8 +120,15 @@ export async function POST(req: Request) {
             };
           }
         } else {
-          // Kurir reguler (JNE/J&T/ID Express): default ke pickup agar order berhasil dibuat di Biteship
-          basePayload.origin_collection_method = process.env.BITESHIP_COLLECTION_METHOD ?? "pickup";
+          // Kurir reguler (JNE, J&T, ID Express)
+          if (isPickupOnly) {
+            // JNE wajib pickup
+            basePayload.origin_collection_method = "pickup";
+          } else {
+            // J&T dan ID Express: default ke drop_off di Live Mode, tapi pickup di Sandbox agar testing berhasil
+            const isTestKey = (process.env.BITESHIP_API_KEY ?? "").startsWith("biteship_test");
+            basePayload.origin_collection_method = process.env.BITESHIP_COLLECTION_METHOD ?? (isTestKey ? "pickup" : "drop_off");
+          }
         }
 
         console.log("[Biteship] Creating order after payment confirmed:", external_id, "| instant:", isInstant);
